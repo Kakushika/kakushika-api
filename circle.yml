@@ -1,0 +1,23 @@
+machine:
+  node:
+    version:
+      0.12.7
+
+dependencies:
+  pre:
+    - npm install -g gulp
+    - git clone ${DEPLOY_TARGET_REPOSITORY} deployment
+  override:
+    - npm install
+    - gulp
+
+test:
+  override:
+    - gulp test
+
+deployment:
+  production:
+    branch: master
+    commands:
+      - chmod +x ./deploy.sh
+      - ./deploy.sh
