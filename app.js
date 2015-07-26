@@ -10,14 +10,18 @@ var express = require('express'),
   bodyParser = require('body-parser'),
   compression = require('compression'),
   helmet = require('helmet'),
+  Sequelize = require('sequelize'),
   config = require('./config');
 
-// require models
-fs.readdirSync(__dirname + '/models').forEach(function(file) {
-  if (~file.indexOf('.js')) {
-    require(__dirname + '/models/' + file);
-  }
-});
+// var sequelize = new Sequelize(config.db.database, config.db.username, config.db.password, {
+//   host: config.db.host,
+//   dialect: config.db.dialect,
+//   pool: {
+//     max: 5,
+//     min: 0,
+//     idle: 10000
+//   },
+// });
 
 // Use helmet to secure Express headers
 app.use(helmet());
