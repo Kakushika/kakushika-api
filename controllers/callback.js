@@ -19,7 +19,7 @@ router.get('/slack', function(req, res) {
       } else {
         // save
         // data.access_token
-        res.redirect(config.host + config.slack.redirect_path.success);
+        res.redirect(config.server.host + config.slack.redirect_path.success);
       }
     });
   }
