@@ -4,7 +4,7 @@
   "description": "kakushika API",
   "main": "server.js",
   "engines": {
-    "node": "~0.12.7",
+    "node": "~0.12.6",
     "npm": "~2.13.2"
   },
   "scripts": {
