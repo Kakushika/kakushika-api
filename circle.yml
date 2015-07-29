@@ -6,7 +6,7 @@ dependencies:
   override:
     - git clone ${DEPLOY_TARGET_REPOSITORY} deployment
     - npm install -g gulp mocha
-    - npm install --dev
+    - npm install
 
 deployment:
   production:
