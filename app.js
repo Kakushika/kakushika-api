@@ -11,7 +11,7 @@ var express = require('express'),
   compression = require('compression'),
   helmet = require('helmet'),
   Sequelize = require('sequelize'),
-  config = require('./config');
+  config = require('config');
 
 // Use helmet to secure Express headers
 app.use(helmet());

@@ -1,23 +1,17 @@
 machine:
   node:
-    version:
-      0.12.7
+    version: 0.12.7
 
 dependencies:
-  pre:
-    - npm install -g gulp
+  override:
     - git clone ${DEPLOY_TARGET_REPOSITORY} deployment
-  override:
+    - npm install -g gulp mocha
     - npm install
-    - gulp
-
-test:
-  override:
-    - gulp test
 
 deployment:
   production:
     branch: master
     commands:
+      - gulp
       - chmod +x ./deploy.sh
       - ./deploy.sh
