@@ -1,0 +1,20 @@
+host:
+  'http://kksk.io'
+
+api:
+  host: 'http://api.kksk.io'
+
+db:
+  host: 'kksk.database.windows.net'
+  database: 'kksk'
+  username: 'kksk'
+  password: 'HackM2015'
+  dialect: 'mssql'
+
+slack:
+  client_id: '2535714809.8192930512'
+  client_secret: 'adc1deb59f3f0dc109658223208990d5'
+  callback_path: '/callback/slack'
+  redirect_path:
+    success: '#/callback/slack/success'
+    error: '#/callback/slack/error'
