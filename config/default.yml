@@ -18,3 +18,6 @@ slack:
   redirect_path:
     success: '#/callback/slack/success'
     error: '#/callback/slack/error'
+
+applicationinsights:
+  instrumentation_key: '45bb61c1-0777-4d55-939f-fd364fb25cbd'

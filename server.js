@@ -7,7 +7,17 @@
  */
 var app = require('./app'),
   debug = require('debug')('posi-nega:server'),
-  http = require('http');
+  http = require('http'),
+  config = require('config'),
+  appInsights = require("applicationinsights");
+
+/**
+ * start monitoring 
+ * - request 
+ * - unhandled exception tracking
+ * - system performance (CPU/Memory/RPS)
+ */
+appInsights.setup(config.applicationinsights.instrumentation_key).start();
 
 /**
  * Get port from environment and store in Express.

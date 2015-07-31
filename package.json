@@ -22,6 +22,7 @@
   },
   "homepage": "https://github.com/Kakushika/kakuhshika-api#readme",
   "dependencies": {
+    "applicationinsights": "^0.15.2",
     "body-parser": "^1.13.2",
     "compression": "^1.5.1",
     "config": "^1.14.0",
