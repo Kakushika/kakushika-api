@@ -9,7 +9,13 @@ var app = require('./app'),
   debug = require('debug')('posi-nega:server'),
   http = require('http'),
   config = require('config'),
-  appInsights = require("applicationinsights");
+  appInsights = require("applicationinsights"),
+  Logger = require("le_node");
+
+var logger = new Logger({
+  token: config.logentries.token
+});
+logger.info("start api server...");
 
 /**
  * start monitoring 

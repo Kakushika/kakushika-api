@@ -21,3 +21,6 @@ slack:
 
 applicationinsights:
   instrumentation_key: '45bb61c1-0777-4d55-939f-fd364fb25cbd'
+
+logentries:
+  token: 'a2d28004-ce5a-495d-8c2a-60e769d96601'
