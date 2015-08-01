@@ -10,6 +10,12 @@ db:
   username: 'kksk'
   password: 'HackM2015'
   dialect: 'mssql'
+  pool:
+    max: 5
+    min: 0
+    idel: 10000
+  dialectOptions:
+    encrypt: true
 
 slack:
   client_id: '2535714809.8192930512'

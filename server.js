@@ -6,19 +6,13 @@
  * Module dependencies.
  */
 var app = require('./app'),
-  debug = require('debug')('posi-nega:server'),
   http = require('http'),
-  config = require('config'),
-  db = require('./models'),
+  models = require('./models'),
   utils = require('./utils');
 
-
-
-utils.logger.info("start api server...");
-
 /**
- * start monitoring 
- * - request 
+ * start monitoring
+ * - request
  * - unhandled exception tracking
  * - system performance (CPU/Memory/RPS)
  */
@@ -38,7 +32,9 @@ var server = http.createServer(app);
 /**
  * Listen on provided port, on all network interfaces.
  */
-server.listen(port);
+models.sequelize.sync().then(function() {
+  server.listen(port);
+});
 server.on('error', onError);
 server.on('listening', onListening);
 
@@ -87,5 +83,5 @@ function onError(error) {
 function onListening() {
   var addr = server.address();
   var bind = typeof addr === 'string' ? 'pipe ' + addr : 'port ' + addr.port;
-  debug('Listening on ' + bind);
+  utils.logger.info('start api server...' + bind);
 }
