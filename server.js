@@ -10,14 +10,11 @@ var app = require('./app'),
   http = require('http'),
   config = require('config'),
   db = require('./models'),
-  appInsights = require("applicationinsights"),
-  logentries = require('node-logentries');
+  utils = require('./utils');
 
 
-var logger = new logentries.logger({
-  token: config.logentries.token
-});
-logger.info("start api server...");
+
+utils.logger.info("start api server...");
 
 /**
  * start monitoring 
@@ -25,7 +22,7 @@ logger.info("start api server...");
  * - unhandled exception tracking
  * - system performance (CPU/Memory/RPS)
  */
-appInsights.setup(config.applicationinsights.instrumentation_key).start();
+utils.appInsights.start();
 
 /**
  * Get port from environment and store in Express.
