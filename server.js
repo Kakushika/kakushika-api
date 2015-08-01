@@ -6,19 +6,14 @@
  * Module dependencies.
  */
 var app = require('./app'),
-  debug = require('debug')('posi-nega:server'),
   http = require('http'),
   config = require('config'),
   db = require('./models'),
   utils = require('./utils');
 
-
-
-utils.logger.info("start api server...");
-
 /**
- * start monitoring 
- * - request 
+ * start monitoring
+ * - request
  * - unhandled exception tracking
  * - system performance (CPU/Memory/RPS)
  */
@@ -87,5 +82,5 @@ function onError(error) {
 function onListening() {
   var addr = server.address();
   var bind = typeof addr === 'string' ? 'pipe ' + addr : 'port ' + addr.port;
-  debug('Listening on ' + bind);
+  utils.logger.info('start api server...' + bind);
 }
