@@ -9,8 +9,10 @@ var app = require('./app'),
   debug = require('debug')('posi-nega:server'),
   http = require('http'),
   config = require('config'),
+  db = require('./models'),
   appInsights = require("applicationinsights"),
   logentries = require('node-logentries');
+
 
 var logger = new logentries.logger({
   token: config.logentries.token
