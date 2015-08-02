@@ -1,12 +1,16 @@
+'use strict';
+
 if (!global.hasOwnProperty('utils')) {
-	var config = require('config'),
-		appInsights = require("applicationinsights"),
-		logentries = require('node-logentries');
-	
-	global.utils = {
-		appInsights: appInsights.setup(config.applicationinsights.instrumentation_key),
-		logger: new logentries.logger({token: config.logentries.token})
-	}
+  var config = require('config'),
+    appInsights = require('applicationinsights'),
+    logentries = require('node-logentries');
+
+  global.utils = {
+    appInsights: appInsights.setup(config.applicationinsights.instrumentation_key),
+    logger: new logentries.logger({
+      token: config.logentries.token
+    })
+  };
 }
 
-module.exports = global.utils
+module.exports = global.utils;
