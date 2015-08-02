@@ -11,6 +11,7 @@ var express = require('express'),
   compression = require('compression'),
   helmet = require('helmet'),
   Sequelize = require('sequelize'),
+  cors = require('cors'),
   config = require('config');
 
 // Use helmet to secure Express headers
@@ -23,6 +24,9 @@ app.use(bodyParser.urlencoded({
 }));
 app.use(cookieParser());
 app.use(compression());
+app.use(cors({
+  origin: config.host
+}));
 app.use(require('./controllers'));
 
 // catch 404 and forward to error handler
