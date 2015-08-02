@@ -10,7 +10,6 @@ var express = require('express'),
   bodyParser = require('body-parser'),
   compression = require('compression'),
   helmet = require('helmet'),
-  Sequelize = require('sequelize'),
   cors = require('cors'),
   config = require('config');
 

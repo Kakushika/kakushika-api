@@ -2,6 +2,8 @@
 
 'use strict';
 
+/* jshint latedef:nofunc */
+
 /**
  * Module dependencies.
  */
