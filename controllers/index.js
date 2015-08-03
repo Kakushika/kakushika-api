@@ -2,6 +2,7 @@
 
 var fs = require('fs'),
   express = require('express'),
+  passport = require('passport'),
   router = express.Router();
 
 fs.readdirSync(__dirname + '/').forEach(function(file) {
@@ -11,10 +12,26 @@ fs.readdirSync(__dirname + '/').forEach(function(file) {
   }
 });
 
+router.post('/login', passport.authenticate('local', {
+  failureFlash: true
+}), function(req, res) {
+  res.json({
+    'ok': true
+  });
+});
+
+router.get('/logout', function(req, res) {
+  req.logout();
+  res.json({
+    'ok': true
+  });
+});
+
 router.get('/', function(req, res) {
   res.json({
     'ok': true
   });
 });
+
 
 module.exports = router;

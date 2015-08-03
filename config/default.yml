@@ -17,6 +17,9 @@ db:
   dialectOptions:
     encrypt: true
 
+session:
+  secret: 'HackM2015'
+
 login:
   password:
     cost: 10
