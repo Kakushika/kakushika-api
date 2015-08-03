@@ -1,19 +1,20 @@
 'use strict';
 
-var should = require('chai').should(),
-  expect = require('chai').expect,
+var expect = require('chai').expect,
   supertest = require('supertest'),
   app = require('../app');
 
-describe('Index', function () {
-  it('should return a 200 response', function (done) {
+describe('Index', function() {
+  it('should return a 200 response', function(done) {
     supertest(app)
       .get('/')
       .expect(200)
-      .end(function (err, res) {
-        if (err) return done(err);
+      .end(function(err, res) {
+        if (err) {
+          return done(err);
+        }
         expect(res.body).to.have.property('result');
-        expect(res.body.result).to.equal('ok')
+        expect(res.body.result).to.equal('ok');
         done();
       });
   });
