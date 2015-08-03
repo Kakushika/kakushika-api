@@ -13,8 +13,8 @@ describe('Index', function() {
         if (err) {
           return done(err);
         }
-        expect(res.body).to.have.property('result');
-        expect(res.body.result).to.equal('ok');
+        expect(res.body).to.have.property('ok');
+        expect(res.body.result).to.be.true;
         done();
       });
   });

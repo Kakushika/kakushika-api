@@ -13,7 +13,7 @@ fs.readdirSync(__dirname + '/').forEach(function(file) {
 
 router.get('/', function(req, res) {
   res.json({
-    'result': 'ok'
+    'ok': true
   });
 });
 
