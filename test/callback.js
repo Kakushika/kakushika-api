@@ -1,7 +1,6 @@
 'use strict';
 
-var should = require('chai').should(),
-  expect = require('chai').expect,
+var expect = require('chai').expect,
   supertest = require('supertest'),
   app = require('../app');
 
@@ -9,9 +8,12 @@ describe('Callback', function() {
   it('should return a 302 response', function(done) {
     supertest(app)
       .get('/callback/slack')
+      .set('X-Requested-With', 'XMLHttpRequest')
       .expect(302)
       .end(function(err, res) {
-        if (err) return done(err);
+        if (err) {
+          return done(err);
+        }
         expect(res.header).to.have.property('location');
         expect(res.header.location).not.to.be.null;
         done();

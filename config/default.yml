@@ -17,6 +17,15 @@ db:
   dialectOptions:
     encrypt: true
 
+session:
+  secret: 'HackM2015'
+
+login:
+  password:
+    cost: 10
+  redirect_path:
+    success: '#/user'
+
 slack:
   client_id: '2535714809.8192930512'
   client_secret: 'adc1deb59f3f0dc109658223208990d5'
