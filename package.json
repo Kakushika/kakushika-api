@@ -35,7 +35,8 @@
     "node-logentries": "^0.1.4",
     "sequelize": "^3.4.1",
     "slack-api": "^0.1.11",
-    "tedious": "^1.11.2"
+    "tedious": "^1.11.2",
+    "validator": "^4.0.1"
   },
   "devDependencies": {
     "chai": "^3.2.0",
