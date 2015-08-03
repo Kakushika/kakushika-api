@@ -26,6 +26,7 @@ app.use(function (req, res, next) {
     err.status = 403;
     next(err);
   }
+  next();
 });
 
 app.use(logger('dev'));
