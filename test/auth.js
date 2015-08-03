@@ -8,6 +8,7 @@ describe('Auth', function() {
   it('should return a 302 response', function(done) {
     supertest(app)
       .get('/auth/slack')
+      .set('X-Requested-With', 'XMLHttpRequest')
       .expect(302)
       .end(function(err, res) {
         if (err) {

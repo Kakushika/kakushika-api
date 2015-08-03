@@ -8,13 +8,14 @@ describe('Index', function() {
   it('should return a 200 response', function(done) {
     supertest(app)
       .get('/')
+      .set('X-Requested-With', 'XMLHttpRequest')
       .expect(200)
       .end(function(err, res) {
         if (err) {
           return done(err);
         }
         expect(res.body).to.have.property('ok');
-        expect(res.body.result).to.be.true;
+        expect(res.body.ok).to.be.true;
         done();
       });
   });
