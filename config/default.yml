@@ -18,6 +18,8 @@ db:
     encrypt: true
 
 login:
+  password:
+    cost: 10
   redirect_path:
     success: '#/user'
 
