@@ -15,6 +15,18 @@ var express = require('express'),
 
 // Use helmet to secure Express headers
 app.use(helmet());
+app.use(cors({
+  origin: config.host,
+  credentials: true,
+  allowedHeaders: ['Origin', 'X-Requested-With', 'Content-Type', 'Accept']
+}));
+app.use(function (req, res, next) {
+  if (!req.xhr) {
+    var err = new Error('Forbidden');
+    err.status = 403;
+    next(err);
+  }
+});
 
 app.use(logger('dev'));
 app.use(bodyParser.json());
@@ -23,9 +35,7 @@ app.use(bodyParser.urlencoded({
 }));
 app.use(cookieParser());
 app.use(compression());
-app.use(cors({
-  origin: config.host
-}));
+
 app.use(require('./controllers'));
 
 // catch 404 and forward to error handler
