@@ -11,7 +11,7 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.STRING,
       unique: true
     },
-    password: DataTypes.STRING
+    passwordHash: DataTypes.STRING
   }, {
     classMethods: {
       associate: function(models) {
@@ -34,7 +34,7 @@ module.exports = function(sequelize, DataTypes) {
         });
         User.hasMany(models.Room, {
           as: 'Rooms',
-          foreignKey: 'ownerId'
+          foreignKey: 'userId'
         });
       }
     }

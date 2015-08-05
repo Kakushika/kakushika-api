@@ -36,7 +36,8 @@ module.exports = function(sequelize, DataTypes) {
           as: 'Rooms',
           foreignKey: 'roomId'
         });
-        Room.hasMany(models.ExternalUser, {
+        Room.belongsToMany(models.ExternalUser, {
+          through: models.RoomExternalUser,
           as: 'ExternalUsers',
           foreignKey: 'roomId'
         });

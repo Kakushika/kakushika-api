@@ -11,10 +11,6 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.INTEGER,
       allowNull: true
     },
-    roomId: {
-      type: DataTypes.INTEGER,
-      unique: 'compositExternalUserIndex'
-    },
     externalType: {
       type: DataTypes.STRING,
       unique: 'compositExternalUserIndex'
@@ -34,6 +30,11 @@ module.exports = function(sequelize, DataTypes) {
           foreignKey: 'roomId'
         });
         ExternalUser.hasMany(models.MessageProperty, {
+          foreignKey: 'externalUserId'
+        });
+        ExternalUser.belongsToMany(models.Room, {
+          through: models.RoomExternalUser,
+          as: 'Rooms',
           foreignKey: 'externalUserId'
         });
       }
