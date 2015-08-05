@@ -20,7 +20,8 @@ module.exports = function(sequelize, DataTypes) {
       unique: 'compositRoomIndex'
     },
     roomGroupId: DataTypes.INTEGER,
-    name: DataTypes.STRING
+    name: DataTypes.STRING,
+    latest: DataTypes.STRING
   }, {
     classMethods: {
       associate: function(models) {
