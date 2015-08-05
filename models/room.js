@@ -19,6 +19,7 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.STRING,
       unique: 'compositRoomIndex'
     },
+    roomGroupId: DataTypes.INTEGER,
     name: DataTypes.STRING
   }, {
     classMethods: {
@@ -33,7 +34,7 @@ module.exports = function(sequelize, DataTypes) {
         });
         Room.belongsToMany(models.AnalyticsGroup, {
           through: models.AnalyticsGroupRoom,
-          as: 'Rooms',
+          as: 'AnalyticsGroups',
           foreignKey: 'roomId'
         });
         Room.belongsToMany(models.ExternalUser, {
