@@ -8,8 +8,8 @@ module.exports = function(sequelize, DataTypes) {
       autoIncrement: true
     },
     roomId: DataTypes.INTEGER,
-    raw: DataTypes.STRING,
-    message: DataTypes.STRING,
+    raw: DataTypes.TEXT,
+    message: DataTypes.TEXT,
     pubDate: DataTypes.DATE
   }, {
     classMethods: {
