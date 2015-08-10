@@ -3,13 +3,13 @@
 var express = require('express'),
   router = express.Router(),
   validator = require('validator'),
-  bcrypt = require('bcrypt'),
+  bcrypt = require('bcrypt-nodejs'),
   config = require('config'),
   models = require('../models');
 
 var getPasswordHash = function(password, cb) {
   bcrypt.genSalt(config.login.password.cost, function(err, salt) {
-    bcrypt.hash(password, salt, function(err, hash) {
+    bcrypt.hash(password, salt, null, function(err, hash) {
       if (err) {
         cb(err);
       } else {
@@ -40,7 +40,7 @@ router.post('/', function(req, res) {
       } else {
         models.User.create({
           email: req.body.email,
-          password: hash
+          passwordHash: hash
         }).then(function() {
           res.header('Location', config.host + config.login.redirect_path.success);
           res.status(201).json({
