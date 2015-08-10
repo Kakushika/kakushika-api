@@ -41,27 +41,28 @@ app.use(bodyParser.urlencoded({
 }));
 app.use(cookieParser());
 app.use(compression());
-
-passport.serializeUser(function(user, done) {
-  done(null, {
-    email: user.email,
-    id: user.id
-  });
-});
-passport.deserializeUser(function(serializedUser, done) {
-  models.User.findById(serializedUser.id)
-    .then(function(user) {
-      done(null, user);
-    });
-});
-passport.use(localStrategy);
-
 app.use(session({
-  secret: config.session.secret
+  secret: config.session.secret,
+  resave: false,
+  saveUninitialized: true
 }));
 app.use(flash());
+
 app.use(passport.initialize());
 app.use(passport.session());
+passport.use(localStrategy);
+passport.serializeUser(function(user, done) {
+  done(null, user.id);
+});
+passport.deserializeUser(function(id, done) {
+  models.User.findById(id)
+    .then(function(user) {
+      done(null, user);
+    })
+    .catch(function(err) {
+      done(err);
+    });
+});
 
 app.use(require('./controllers'));
 

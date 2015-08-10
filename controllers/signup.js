@@ -3,21 +3,7 @@
 var express = require('express'),
   router = express.Router(),
   validator = require('validator'),
-  bcrypt = require('bcrypt-nodejs'),
-  config = require('config'),
   models = require('../models');
-
-var getPasswordHash = function(password, cb) {
-  bcrypt.genSalt(config.login.password.cost, function(err, salt) {
-    bcrypt.hash(password, salt, null, function(err, hash) {
-      if (err) {
-        cb(err);
-      } else {
-        cb(null, hash);
-      }
-    });
-  });
-};
 
 router.post('/', function(req, res) {
   if (!req.body.email || !validator.isEmail(req.body.email)) {
@@ -31,23 +17,18 @@ router.post('/', function(req, res) {
       'error': 'invalid_password'
     });
   } else {
-    getPasswordHash(req.body.password, function(err, hash) {
-      if (err) {
-        res.json({
-          'ok': false,
-          'error': 'invalid_password'
-        });
-      } else {
-        models.User.create({
-          email: req.body.email,
-          passwordHash: hash
-        }).then(function() {
-          res.header('Location', config.host + config.login.redirect_path.success);
-          res.status(201).json({
-            'ok': true
-          });
-        });
-      }
+    models.User.create({
+      email: req.body.email,
+      passwordHash: req.body.password
+    }).then(function() {
+      res.status(201).json({
+        'ok': true
+      });
+    }).catch(function(err) {
+      res.status(200).json({
+        'ok': false,
+        'error': err
+      });
     });
   }
 });

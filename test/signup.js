@@ -37,8 +37,6 @@ describe('Signup', function() {
         }
         expect(res.body).to.have.property('ok');
         expect(res.body.ok).to.be.true;
-        expect(res.header).to.have.property('location');
-        expect(res.header.location).not.to.be.null;
         done();
       });
   });

@@ -12,9 +12,7 @@ fs.readdirSync(__dirname + '/').forEach(function(file) {
   }
 });
 
-router.post('/login', passport.authenticate('local', {
-  failureFlash: true
-}), function(req, res) {
+router.post('/login', passport.authenticate('local'), function(req, res) {
   res.json({
     'ok': true
   });

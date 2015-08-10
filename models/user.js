@@ -1,5 +1,8 @@
 'use strict';
 
+var bcrypt = require('bcrypt'),
+  config = require('config');
+
 module.exports = function(sequelize, DataTypes) {
   var User = sequelize.define('User', {
     id: {
@@ -11,7 +14,15 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.STRING,
       unique: true
     },
-    passwordHash: DataTypes.STRING
+    passwordHash: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      set: function(val) {
+        var salt = bcrypt.genSaltSync(config.login.password.cost);
+        var hash = bcrypt.hashSync(val, salt);
+        this.setDataValue('passwordHash', hash);
+      }
+    }
   }, {
     classMethods: {
       associate: function(models) {
@@ -35,6 +46,21 @@ module.exports = function(sequelize, DataTypes) {
         User.hasMany(models.Room, {
           as: 'Rooms',
           foreignKey: 'userId'
+        });
+      }
+    },
+    instanceMethods: {
+      setPassword: function(password, done) {
+        return bcrypt.genSalt(config.login.password.cost, function(err, salt) {
+          return bcrypt.hash(password, salt, function(error, hash) {
+            this.passwordHash = hash;
+            return done();
+          });
+        });
+      },
+      verifyPassword: function(password, done) {
+        bcrypt.compare(password, this.passwordHash, function(err, res) {
+          return done(err, res);
         });
       }
     }
