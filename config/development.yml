@@ -1,0 +1,13 @@
+db:
+  host: 'kksk-test.database.windows.net'
+  database: 'kksk-test'
+  username: 'kksk'
+  password: 'HackM2015'
+  dialect: 'mssql'
+  pool:
+    max: 5
+    min: 0
+    idel: 10000
+  dialectOptions:
+    encrypt: true
+  logging: false
