@@ -25,14 +25,6 @@ app.use(cors({
   credentials: true,
   allowedHeaders: ['Origin', 'X-Requested-With', 'Content-Type', 'Accept']
 }));
-app.use(function(req, res, next) {
-  if (!req.xhr) {
-    var err = new Error('Forbidden');
-    err.status = 403;
-    next(err);
-  }
-  next();
-});
 
 app.use(logger('dev'));
 app.use(bodyParser.json());
