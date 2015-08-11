@@ -3,9 +3,10 @@
 var express = require('express'),
   router = express.Router(),
   config = require('config'),
-  Slack = require('slack-api');
+  Slack = require('slack-api'),
+  auth = require('../middleware/auth');
 
-router.get('/slack', function(req, res) {
+router.get('/slack', auth, function(req, res) {
   Slack.oauth.getUrl({
     'client_id': config.slack.client_id,
     'redirect_uri': config.api.host + config.slack.callback_path

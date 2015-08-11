@@ -11,9 +11,7 @@ var express = require('express'),
   compression = require('compression'),
   helmet = require('helmet'),
   cors = require('cors'),
-  flash = require('connect-flash'),
   passport = require('passport'),
-  session = require('express-session'),
   config = require('config'),
   localStrategy = require('./middleware/local_strategy'),
   models = require('./models');
@@ -33,28 +31,9 @@ app.use(bodyParser.urlencoded({
 }));
 app.use(cookieParser());
 app.use(compression());
-app.use(session({
-  secret: config.session.secret,
-  resave: false,
-  saveUninitialized: true
-}));
-app.use(flash());
 
 app.use(passport.initialize());
-app.use(passport.session());
 passport.use(localStrategy);
-passport.serializeUser(function(user, done) {
-  done(null, user.id);
-});
-passport.deserializeUser(function(id, done) {
-  models.User.findById(id)
-    .then(function(user) {
-      done(null, user);
-    })
-    .catch(function(err) {
-      done(err);
-    });
-});
 
 app.use(require('./controllers'));
 
