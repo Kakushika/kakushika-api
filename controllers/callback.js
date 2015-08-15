@@ -3,11 +3,14 @@
 var express = require('express'),
   router = express.Router(),
   config = require('config'),
-  Slack = require('slack-api');
+  Slack = require('slack-api'),
+  auth = require('../middleware/auth');
 
-router.get('/slack', function(req, res) {
+router.get('/slack', auth, function(req, res) {
   if (!req.query.code) {
-    res.redirect(config.host + config.slack.redirect_path.error);
+    res.json({
+      ok: false
+    });
   } else {
     Slack.oauth.access({
       'client_id': config.slack.client_id,
@@ -15,11 +18,15 @@ router.get('/slack', function(req, res) {
       'code': req.query.code
     }, function (error, data) {
       if (error || !data.ok) {
-        res.redirect(config.host + config.slack.redirect_path.error);
+        res.json({
+          ok: false
+        });
       } else {
         // save
         // data.access_token
-        res.redirect(config.host + config.slack.redirect_path.success);
+        res.json({
+          ok: true
+        });
       }
     });
   }
