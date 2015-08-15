@@ -2,13 +2,12 @@
 
 var expect = require('chai').expect,
   supertest = require('supertest'),
-  app = require('../app');
+  app = require('../../app');
 
 describe('Auth', function() {
   it('should return a 302 response', function(done) {
     supertest(app)
       .get('/auth/slack')
-      .set('X-Requested-With', 'XMLHttpRequest')
       .expect(302)
       .end(function(err, res) {
         if (err) {

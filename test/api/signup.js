@@ -2,14 +2,12 @@
 
 var expect = require('chai').expect,
   supertest = require('supertest'),
-  app = require('../app'),
-  models = require('../models');
+  app = require('../../app');
 
 describe('Signup', function() {
   it('should return a 200 response', function(done) {
     supertest(app)
       .post('/signup')
-      .set('X-Requested-With', 'XMLHttpRequest')
       .expect(200)
       .end(function(err, res) {
         if (err) {
@@ -25,9 +23,8 @@ describe('Signup', function() {
   it('should return a 201 response', function(done) {
     supertest(app)
       .post('/signup')
-      .set('X-Requested-With', 'XMLHttpRequest')
       .send({
-        'email': 'hoge@hoge.net',
+        'email': 'hoge2@hoge.net',
         'password': 'hoge'
       })
       .expect(201)
@@ -37,17 +34,9 @@ describe('Signup', function() {
         }
         expect(res.body).to.have.property('ok');
         expect(res.body.ok).to.be.true;
-        expect(res.header).to.have.property('location');
-        expect(res.header.location).not.to.be.null;
+        expect(res.body).to.have.property('token');
+        expect(res.body.token).not.to.be.null;
         done();
       });
-  });
-
-  after(function (done) {
-    models.sequelize.sync({
-      force: true
-    }).then(function() {
-      done();
-    });
   });
 });

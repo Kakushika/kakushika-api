@@ -11,9 +11,7 @@ var express = require('express'),
   compression = require('compression'),
   helmet = require('helmet'),
   cors = require('cors'),
-  flash = require('connect-flash'),
   passport = require('passport'),
-  session = require('express-session'),
   config = require('config'),
   localStrategy = require('./middleware/local_strategy'),
   models = require('./models');
@@ -25,14 +23,6 @@ app.use(cors({
   credentials: true,
   allowedHeaders: ['Origin', 'X-Requested-With', 'Content-Type', 'Accept']
 }));
-app.use(function(req, res, next) {
-  if (!req.xhr) {
-    var err = new Error('Forbidden');
-    err.status = 403;
-    next(err);
-  }
-  next();
-});
 
 app.use(logger('dev'));
 app.use(bodyParser.json());
@@ -42,26 +32,8 @@ app.use(bodyParser.urlencoded({
 app.use(cookieParser());
 app.use(compression());
 
-passport.serializeUser(function(user, done) {
-  done(null, {
-    email: user.email,
-    id: user.id
-  });
-});
-passport.deserializeUser(function(serializedUser, done) {
-  models.User.findById(serializedUser.id)
-    .then(function(user) {
-      done(null, user);
-    });
-});
-passport.use(localStrategy);
-
-app.use(session({
-  secret: config.session.secret
-}));
-app.use(flash());
 app.use(passport.initialize());
-app.use(passport.session());
+passport.use(localStrategy);
 
 app.use(require('./controllers'));
 

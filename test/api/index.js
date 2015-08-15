@@ -2,13 +2,12 @@
 
 var expect = require('chai').expect,
   supertest = require('supertest'),
-  app = require('../app');
+  app = require('../../app');
 
 describe('Index', function() {
   it('should return a 200 response', function(done) {
     supertest(app)
       .get('/')
-      .set('X-Requested-With', 'XMLHttpRequest')
       .expect(200)
       .end(function(err, res) {
         if (err) {

@@ -17,22 +17,17 @@ db:
   dialectOptions:
     encrypt: true
 
-session:
-  secret: 'HackM2015'
+jwt:
+  secret: 'OZ3MbJn98K5CqSR6ZiY27Hvz6uJ13dEQ'
 
 login:
   password:
     cost: 10
-  redirect_path:
-    success: '#/user'
 
 slack:
   client_id: '2535714809.8192930512'
   client_secret: 'adc1deb59f3f0dc109658223208990d5'
   callback_path: '/callback/slack'
-  redirect_path:
-    success: '#/callback/slack/success'
-    error: '#/callback/slack/error'
 
 applicationinsights:
   instrumentation_key: '45bb61c1-0777-4d55-939f-fd364fb25cbd'
