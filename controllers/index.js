@@ -5,7 +5,6 @@ var fs = require('fs'),
   passport = require('passport'),
   jwt = require('jsonwebtoken'),
   config = require('config'),
-  auth = require('../middleware/auth'),
   router = express.Router();
 
 fs.readdirSync(__dirname + '/').forEach(function(file) {
@@ -29,15 +28,7 @@ router.post('/login', passport.authenticate('local', {
   });
 });
 
-router.get('/logout', function(req, res) {
-  req.logout();
-  res.json({
-    ok: true
-  });
-});
-
-router.get('/', auth, function(req, res) {
-  console.log(req.decoded);
+router.get('/', function(req, res) {
   res.json({
     ok: true
   });
