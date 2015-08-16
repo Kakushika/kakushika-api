@@ -13,9 +13,9 @@ router.get('/slack', auth, function(req, res) {
     });
   } else {
     Slack.oauth.access({
-      'client_id': config.slack.client_id,
-      'client_secret': config.slack.client_secret,
-      'code': req.query.code
+      client_id: config.slack.client_id,
+      client_secret: config.slack.client_secret,
+      code: req.query.code
     }, function (error, data) {
       if (error || !data.ok) {
         res.json({
