@@ -28,7 +28,10 @@ router.get('/slack', auth, function(req, res, next) {
           .get(config.slack.api_url + '/team.info?token=' + data.access_token)
           .end(function(err, res) {
             if (err) {
-              next(err);
+              console.error(err);
+              return res.json({
+                ok: false
+              });
             }
             models.Claim.create({
               userId: req.decoded.id,
@@ -40,6 +43,41 @@ router.get('/slack', auth, function(req, res, next) {
               externalType: 'slack',
               externalId: res.body.team.id,
               name: res.body.team.name
+            }).then(function(roomGroup) {
+              Slack.channel.list({
+                token: data.access_token
+              }, function(err, data) {
+                if (err) {
+                  console.error(err);
+                  return;
+                }
+                data.channels.forEach(function(channel) {
+                  models.Room.create({
+                    userId: req.decoded.id,
+                    externalType: 'slack',
+                    externalId: channel.id,
+                    roomGroupId: roomGroup.id,
+                    name: channel.name
+                  });
+                });
+              });
+              Slack.groups.list({
+                token: data.access_token
+              }, function (err, data) {
+                if (err) {
+                  console.error(err);
+                  return;
+                }
+                data.groups.forEach(function(group) {
+                  models.Room.create({
+                    userId: req.decoded.id,
+                    externalType: 'slack',
+                    externalId: group.id,
+                    roomGroupId: roomGroup.id,
+                    name: group.name
+                  });
+                });
+              });
             });
             res.json({
               ok: true
