@@ -7,7 +7,7 @@ module.exports = function(sequelize, DataTypes) {
       primaryKey: true,
       autoIncrement: true
     },
-	 userId: {
+    userId: {
       type: DataTypes.INTEGER,
       unique: 'compositRoomGroupIndex'
     },
