@@ -6,7 +6,8 @@ var express = require('express'),
   request = require('superagent'),
   Slack = require('slack-api'),
   auth = require('../middleware/auth'),
-  models = require('../models');
+  models = require('../models'),
+  task = require('../utils/task');
 
 router.get('/slack', auth, function(req, res, next) {
   if (!req.query.code) {
@@ -58,12 +59,14 @@ router.get('/slack', auth, function(req, res, next) {
                     externalId: channel.id,
                     roomGroupId: roomGroup.id,
                     name: channel.name
+                  }).then(function(room) {
+                    task(req.decoded.id, room.id);
                   });
                 });
               });
               Slack.groups.list({
                 token: data.access_token
-              }, function (err, data) {
+              }, function(err, data) {
                 if (err) {
                   console.error(err);
                   return;
@@ -75,6 +78,8 @@ router.get('/slack', auth, function(req, res, next) {
                     externalId: group.id,
                     roomGroupId: roomGroup.id,
                     name: group.name
+                  }).then(function(room) {
+                    task(req.decoded.id, room.id);
                   });
                 });
               });

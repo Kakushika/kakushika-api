@@ -35,3 +35,11 @@ applicationinsights:
 
 logentries:
   token: 'a2d28004-ce5a-495d-8c2a-60e769d96601'
+
+azure:
+  scheduler:
+    url: 'https://management.core.windows.net/'
+    cloudService: 'CS-JapanWest-scheduler'
+    subscriptionId: 'bfa4c371-3b8c-4800-81b9-3b368ccfcaca'
+    taskname: 'kksktask'
+    sasToken: '?sv=2012-02-12&se=2017-01-19T11%3A07%3A25Z&sp=a&sig=E3lDh16Quz5XOxZ6JS7efA9TZvuqHMX8tWRQ%2F6RTDSY%3D'
