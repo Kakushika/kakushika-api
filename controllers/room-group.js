@@ -9,12 +9,25 @@ router.get('/', auth, function(req, res, next) {
   var userId = req.decoded.id;
 
   models.RoomGroup.findAll({
+    attributes: [
+      'id',
+      'name',
+      'externalType',
+      'externalId'
+    ],
     where: {
       userId: userId
     },
     include: [{
       model: models.Room,
-      as: 'Rooms'
+      as: 'Rooms',
+      attributes: [
+        'id',
+        'name',
+        'externalType',
+        'externalId',
+        'latest'
+      ]
     }]
   }).then(function(roomGroup) {
     res.json({
