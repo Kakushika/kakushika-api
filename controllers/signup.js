@@ -7,16 +7,16 @@ var express = require('express'),
   validator = require('validator'),
   models = require('../models');
 
-router.post('/', function(req, res) {
+router.post('/', function(req, res, next) {
   if (!req.body.email || !validator.isEmail(req.body.email)) {
     res.json({
       ok: false,
-      error: 'invalid_email'
+      message: 'invalid_email'
     });
   } else if (!req.body.password) {
     res.json({
       ok: false,
-      error: 'invalid_password'
+      message: 'invalid_password'
     });
   } else {
     models.User.create({
@@ -33,10 +33,7 @@ router.post('/', function(req, res) {
         token: token
       });
     }).catch(function(err) {
-      res.status(200).json({
-        ok: false,
-        error: err
-      });
+      next(err);
     });
   }
 });
