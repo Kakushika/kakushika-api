@@ -25,6 +25,7 @@ login:
     cost: 10
 
 slack:
+  api_url: 'https://slack.com/api'
   client_id: '2535714809.8192930512'
   client_secret: 'adc1deb59f3f0dc109658223208990d5'
   callback_path: '/callback/slack'
