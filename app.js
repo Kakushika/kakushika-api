@@ -52,6 +52,7 @@ if (app.get('env') === 'development') {
   app.use(function(err, req, res, next) {
     res.status(err.status || 500);
     res.json({
+      ok: false,
       message: err.message,
       error: err
     });
@@ -63,8 +64,8 @@ if (app.get('env') === 'development') {
 app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.json({
-    message: err.message,
-    error: {}
+    ok: false,
+    message: err.message
   });
 });
 
