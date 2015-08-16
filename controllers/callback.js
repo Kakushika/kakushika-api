@@ -35,6 +35,12 @@ router.get('/slack', auth, function(req, res, next) {
               key: 'slack:' + res.body.team.id + ':token',
               token: data.access_token
             });
+            models.RoomGroup.create({
+              userId: req.decoded.id,
+              externalType: 'slack',
+              externalId: res.body.team.id,
+              name: res.body.team.name
+            });
             res.json({
               ok: true
             });
