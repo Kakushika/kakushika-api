@@ -4,10 +4,10 @@ var expect = require('chai').expect,
   supertest = require('supertest'),
   app = require('../../app');
 
-describe('RoomGroup', function() {
+describe('Room', function() {
   it('should return a ok', function(done) {
     supertest(app)
-      .get('/room-group')
+      .get('/room')
       .set('x-access-token', global.accessToken)
       .expect(200)
       .end(function(err, res) {
@@ -16,7 +16,7 @@ describe('RoomGroup', function() {
         }
         expect(res.body).to.have.property('ok');
         expect(res.body.ok).to.be.true;
-        expect(res.body).to.have.property('roomGroup');
+        expect(res.body).to.have.property('rooms');
         done();
       });
   });
