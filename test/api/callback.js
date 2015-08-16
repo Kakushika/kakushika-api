@@ -5,7 +5,7 @@ var expect = require('chai').expect,
   app = require('../../app');
 
 describe('Callback', function() {
-  it('should return a 302 response', function(done) {
+  it('should return a not ok', function(done) {
     supertest(app)
       .get('/callback/slack')
       .set('x-access-token', global.accessToken)
@@ -15,7 +15,7 @@ describe('Callback', function() {
           return done(err);
         }
         expect(res.body).to.have.property('ok');
-        expect(res.body.result).to.not.be.true;
+        expect(res.body.ok).to.not.be.true;
         done();
       });
   });

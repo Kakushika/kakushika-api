@@ -5,7 +5,7 @@ var expect = require('chai').expect,
   app = require('../../app');
 
 describe('RoomGroup', function() {
-  it('should return a 200 response', function(done) {
+  it('should return a not ok', function(done) {
     supertest(app)
       .get('/room-group')
       .set('x-access-token', global.accessToken)
@@ -15,7 +15,7 @@ describe('RoomGroup', function() {
           return done(err);
         }
         expect(res.body).to.have.property('ok');
-        expect(res.body.result).to.not.be.true;
+        expect(res.body.ok).to.be.true;
         expect(res.body).to.have.property('roomGroup');
         done();
       });

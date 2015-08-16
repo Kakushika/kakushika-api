@@ -14,7 +14,7 @@ describe('Signup', function() {
           return done(err);
         }
         expect(res.body).to.have.property('ok');
-        expect(res.body.result).to.not.be.true;
+        expect(res.body.ok).to.not.be.true;
         expect(res.body).to.have.property('message');
         done();
       });
