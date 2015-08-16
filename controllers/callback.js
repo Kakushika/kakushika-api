@@ -9,7 +9,9 @@ var express = require('express'),
   models = require('../models'),
   task = require('../utils/task');
 
-router.get('/slack', auth, function(req, res, next) {
+router.get('/slack', auth, function(req, res) {
+  var userId = req.decoded.id;
+
   if (!req.query.code) {
     res.json({
       ok: false
@@ -35,12 +37,12 @@ router.get('/slack', auth, function(req, res, next) {
               });
             }
             models.Claim.create({
-              userId: req.decoded.id,
+              userId: userId,
               key: 'slack:' + res.body.team.id + ':token',
               token: data.access_token
             });
             models.RoomGroup.create({
-              userId: req.decoded.id,
+              userId: userId,
               externalType: 'slack',
               externalId: res.body.team.id,
               name: res.body.team.name
@@ -54,13 +56,17 @@ router.get('/slack', auth, function(req, res, next) {
                 }
                 data.channels.forEach(function(channel) {
                   models.Room.create({
-                    userId: req.decoded.id,
+                    userId: userId,
                     externalType: 'slack',
                     externalId: channel.id,
                     roomGroupId: roomGroup.id,
                     name: channel.name
                   }).then(function(room) {
-                    task(req.decoded.id, room.id);
+                    task(userId, room.id);
+                    models.Redable.create({
+                      userId: userId,
+                      roomId: room.id
+                    });
                   });
                 });
               });
@@ -73,13 +79,17 @@ router.get('/slack', auth, function(req, res, next) {
                 }
                 data.groups.forEach(function(group) {
                   models.Room.create({
-                    userId: req.decoded.id,
+                    userId: userId,
                     externalType: 'slack',
                     externalId: group.id,
                     roomGroupId: roomGroup.id,
                     name: group.name
                   }).then(function(room) {
-                    task(req.decoded.id, room.id);
+                    task(userId, room.id);
+                    models.Redable.create({
+                      userId: userId,
+                      roomId: room.id
+                    });
                   });
                 });
               });
