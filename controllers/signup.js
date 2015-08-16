@@ -10,13 +10,13 @@ var express = require('express'),
 router.post('/', function(req, res) {
   if (!req.body.email || !validator.isEmail(req.body.email)) {
     res.json({
-      'ok': false,
-      'error': 'invalid_email'
+      ok: false,
+      error: 'invalid_email'
     });
   } else if (!req.body.password) {
     res.json({
-      'ok': false,
-      'error': 'invalid_password'
+      ok: false,
+      error: 'invalid_password'
     });
   } else {
     models.User.create({
@@ -34,8 +34,8 @@ router.post('/', function(req, res) {
       });
     }).catch(function(err) {
       res.status(200).json({
-        'ok': false,
-        'error': err
+        ok: false,
+        error: err
       });
     });
   }
