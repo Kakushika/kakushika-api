@@ -6,7 +6,7 @@ var fs = require('fs'),
   date = require('./date');
 
 module.exports = function(user_id, room_id) {
-  fs.readFile(config.subscriptionId + '.pem', 'utf8', function(err, pem) {
+  fs.readFile(__dirname + '/' + config.subscriptionId + '.pem', 'utf8', function(err, pem) {
     if (err) {
       console.error(err);
       return;
