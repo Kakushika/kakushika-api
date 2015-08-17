@@ -20,8 +20,7 @@ var express = require('express'),
 app.use(helmet());
 app.use(cors({
   origin: config.host,
-  credentials: true,
-  allowedHeaders: ['Origin', 'X-Requested-With', 'Content-Type', 'Accept']
+  allowedHeaders: ['Origin', 'X-Requested-With', 'Content-Type', 'Accept', 'x-access-token']
 }));
 
 app.use(logger('dev'));
@@ -29,7 +28,6 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
   extended: false
 }));
-app.use(cookieParser());
 app.use(compression());
 
 app.use(passport.initialize());
