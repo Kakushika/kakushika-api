@@ -5,13 +5,21 @@ var expect = require('chai').expect,
   app = require('../../app');
 
 describe('Login', function() {
-  it('should return a 400 response', function(done) {
+  it('should return a not ok', function(done) {
     supertest(app)
       .post('/login')
-      .expect(400, done);
+      .expect(200)
+      .end(function(err, res) {
+        if (err) {
+          return done(err);
+        }
+        expect(res.body).to.have.property('ok');
+        expect(res.body.ok).not.to.be.true;
+        done();
+      });
   });
 
-  it('should return a 200 response', function (done) {
+  it('should return a ok', function(done) {
     supertest(app)
       .post('/login')
       .send({
