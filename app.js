@@ -11,17 +11,14 @@ var express = require('express'),
   compression = require('compression'),
   helmet = require('helmet'),
   cors = require('cors'),
-  passport = require('passport'),
   config = require('config'),
-  localStrategy = require('./middleware/local_strategy'),
   models = require('./models');
 
 // Use helmet to secure Express headers
 app.use(helmet());
 app.use(cors({
   origin: config.host,
-  credentials: true,
-  allowedHeaders: ['Origin', 'X-Requested-With', 'Content-Type', 'Accept']
+  allowedHeaders: ['Origin', 'X-Requested-With', 'Content-Type', 'Accept', 'x-access-token']
 }));
 
 app.use(logger('dev'));
@@ -29,11 +26,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
   extended: false
 }));
-app.use(cookieParser());
 app.use(compression());
-
-app.use(passport.initialize());
-passport.use(localStrategy);
 
 app.use(require('./controllers'));
 
