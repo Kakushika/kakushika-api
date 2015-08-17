@@ -11,9 +11,7 @@ var express = require('express'),
   compression = require('compression'),
   helmet = require('helmet'),
   cors = require('cors'),
-  passport = require('passport'),
   config = require('config'),
-  localStrategy = require('./middleware/local_strategy'),
   models = require('./models');
 
 // Use helmet to secure Express headers
@@ -29,9 +27,6 @@ app.use(bodyParser.urlencoded({
   extended: false
 }));
 app.use(compression());
-
-app.use(passport.initialize());
-passport.use(localStrategy);
 
 app.use(require('./controllers'));
 
