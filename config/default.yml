@@ -26,9 +26,9 @@ login:
 
 slack:
   api_url: 'https://slack.com/api'
-  client_id: '2535714809.8192930512'
-  client_secret: 'adc1deb59f3f0dc109658223208990d5'
-  callback_path: '/callback/slack'
+  client_id: '9266174033.9265709104'
+  client_secret: 'd3edecd5c1ab4dbc6f30c26895f1f553'
+  callback_path: '#/callback/slack/success'
   redirect_path:
     error: '#/callback/slack/error'
 
