@@ -13,7 +13,7 @@ router.get('/slack', auth, function(req, res) {
   var userId = req.decoded.id;
 
   if (!req.query.code) {
-    res.json({
+    res.status(400).json({
       ok: false
     });
   } else {
@@ -23,7 +23,7 @@ router.get('/slack', auth, function(req, res) {
       code: req.query.code
     }, function(error, data) {
       if (error || !data.ok) {
-        res.json({
+        res.status(400).json({
           ok: false
         });
       } else {
@@ -32,7 +32,7 @@ router.get('/slack', auth, function(req, res) {
           .end(function(err, res) {
             if (err) {
               console.error(err);
-              return res.json({
+              return res.status(500).json({
                 ok: false
               });
             }
