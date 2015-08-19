@@ -32,7 +32,7 @@ router.get('/', auth, function(req, res, next) {
   }).then(function(roomGroup) {
     res.json({
       ok: true,
-      roomGroup: roomGroup
+      roomGroups: roomGroup
     });
   }).catch(function(err) {
     next(err);
