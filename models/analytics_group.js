@@ -22,6 +22,16 @@ module.exports = function(sequelize, DataTypes) {
           as: 'Rooms',
           foreignKey: 'analyticsGroupId'
         });
+        AnalyticsGroup.belongsToMany(models.AnalyticsGroup, {
+          through: models.AnalyticsGroupMesh,
+          as: 'ParentGroups',
+          foreignKey: 'childAnalyticsGroupId'
+        });
+        AnalyticsGroup.belongsToMany(models.AnalyticsGroup, {
+          through: models.AnalyticsGroupMesh,
+          as: 'ChildGroups',
+          foreignKey: 'parentAnalyticsGroupId'
+        });
       }
     }
   });
