@@ -13,7 +13,7 @@ router.get('/', auth, function(req, res, next) {
     limit = req.query.limit | 10;
 
   if (room_id === 0 && analytics_group_id === 0) {
-    return res.json({
+    return res.status(400).json({
       ok: false
     });
   }
@@ -42,7 +42,7 @@ router.get('/', auth, function(req, res, next) {
       }]
     }).then(function(room) {
       if (room.ReadableUsers.length !== 1) {
-        return res.json({
+        return res.status(404).json({
           ok: false
         });
       }
@@ -73,7 +73,7 @@ router.get('/', auth, function(req, res, next) {
       }]
     }).then(function(analyticsGroup) {
       if (analyticsGroup.userId !== userId) {
-        return res.json({
+        return res.status(404).json({
           ok: false
         });
       }
