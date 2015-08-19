@@ -16,7 +16,7 @@ describe('RoomGroup', function() {
         }
         expect(res.body).to.have.property('ok');
         expect(res.body.ok).to.be.true;
-        expect(res.body).to.have.property('roomGroup');
+        expect(res.body).to.have.property('roomGroups');
         done();
       });
   });
