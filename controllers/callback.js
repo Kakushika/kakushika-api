@@ -29,7 +29,7 @@ router.get('/slack', auth, function(req, res) {
       } else {
         request
           .get(config.slack.api_url + '/team.info?token=' + data.access_token)
-          .end(function(err, res) {
+          .end(function(err, result) {
             if (err) {
               console.error(err);
               return res.status(500).json({
@@ -38,14 +38,14 @@ router.get('/slack', auth, function(req, res) {
             }
             models.Claim.create({
               userId: userId,
-              key: 'slack:' + res.body.team.id + ':token',
+              key: 'slack:' + result.body.team.id + ':token',
               token: data.access_token
             });
             models.RoomGroup.create({
               userId: userId,
               externalType: 'slack',
-              externalId: res.body.team.id,
-              name: res.body.team.name
+              externalId: result.body.team.id,
+              name: result.body.team.name
             }).then(function(roomGroup) {
               Slack.channel.list({
                 token: data.access_token
@@ -63,7 +63,7 @@ router.get('/slack', auth, function(req, res) {
                     name: channel.name
                   }).then(function(room) {
                     task(userId, room.id);
-                    models.Redable.create({
+                    models.Readable.create({
                       userId: userId,
                       roomId: room.id
                     });
@@ -86,7 +86,7 @@ router.get('/slack', auth, function(req, res) {
                     name: group.name
                   }).then(function(room) {
                     task(userId, room.id);
-                    models.Redable.create({
+                    models.Readable.create({
                       userId: userId,
                       roomId: room.id
                     });
