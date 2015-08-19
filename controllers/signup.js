@@ -9,12 +9,12 @@ var express = require('express'),
 
 router.post('/', function(req, res, next) {
   if (!req.body.email || !validator.isEmail(req.body.email)) {
-    res.json({
+    res.status(400).json({
       ok: false,
       message: 'invalid_email'
     });
   } else if (!req.body.password) {
-    res.json({
+    res.status(400).json({
       ok: false,
       message: 'invalid_password'
     });

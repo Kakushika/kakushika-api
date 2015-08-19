@@ -13,7 +13,7 @@ router.get('/slack', auth, function(req, res) {
   var userId = req.decoded.id;
 
   if (!req.query.code) {
-    res.json({
+    res.status(400).json({
       ok: false
     });
   } else {
@@ -23,29 +23,29 @@ router.get('/slack', auth, function(req, res) {
       code: req.query.code
     }, function(error, data) {
       if (error || !data.ok) {
-        res.json({
+        res.status(400).json({
           ok: false
         });
       } else {
         request
           .get(config.slack.api_url + '/team.info?token=' + data.access_token)
-          .end(function(err, res) {
+          .end(function(err, result) {
             if (err) {
               console.error(err);
-              return res.json({
+              return res.status(500).json({
                 ok: false
               });
             }
             models.Claim.create({
               userId: userId,
-              key: 'slack:' + res.body.team.id + ':token',
+              key: 'slack:' + result.body.team.id + ':token',
               token: data.access_token
             });
             models.RoomGroup.create({
               userId: userId,
               externalType: 'slack',
-              externalId: res.body.team.id,
-              name: res.body.team.name
+              externalId: result.body.team.id,
+              name: result.body.team.name
             }).then(function(roomGroup) {
               Slack.channel.list({
                 token: data.access_token
@@ -63,7 +63,7 @@ router.get('/slack', auth, function(req, res) {
                     name: channel.name
                   }).then(function(room) {
                     task(userId, room.id);
-                    models.Redable.create({
+                    models.Readable.create({
                       userId: userId,
                       roomId: room.id
                     });
@@ -86,7 +86,7 @@ router.get('/slack', auth, function(req, res) {
                     name: group.name
                   }).then(function(room) {
                     task(userId, room.id);
-                    models.Redable.create({
+                    models.Readable.create({
                       userId: userId,
                       roomId: room.id
                     });
