@@ -9,7 +9,7 @@ describe('Callback', function() {
     supertest(app)
       .get('/callback/slack')
       .set('x-access-token', global.accessToken)
-      .expect(200)
+      .expect(400)
       .end(function(err, res) {
         if (err) {
           return done(err);
