@@ -12,12 +12,12 @@ router.post('/', function(req, res, next) {
     password = req.body.password;
 
   if (!email || !validator.isEmail(email)) {
-    res.json({
+    res.status(400).json({
       ok: false,
       message: 'invalid_email'
     });
   } else if (!password) {
-    res.json({
+    res.status(400).json({
       ok: false,
       message: 'invalid_password'
     });
@@ -26,7 +26,7 @@ router.post('/', function(req, res, next) {
       email: email
     }).then(function(user) {
       if (!user) {
-        return res.json({
+        return res.status(401).json({
           ok: false
         });
       }
@@ -35,7 +35,7 @@ router.post('/', function(req, res, next) {
           return next(err);
         }
         if (!result) {
-          return res.json({
+          return res.status(401).json({
             ok: false
           });
         } else {

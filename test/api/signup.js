@@ -8,7 +8,7 @@ describe('Signup', function() {
   it('should return a 200 response', function(done) {
     supertest(app)
       .post('/signup')
-      .expect(200)
+      .expect(400)
       .end(function(err, res) {
         if (err) {
           return done(err);
