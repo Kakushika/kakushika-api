@@ -17,6 +17,11 @@ module.exports = function(sequelize, DataTypes) {
         Message.hasOne(models.MessageProperty, {
           foreignKey: 'messageId'
         });
+        Message.belongsToMany(models.ExternalUser, {
+          through: models.MessageProperty,
+          as: 'ExternalUsers',
+          foreignKey: 'messageId'
+        });
       }
     }
   });
