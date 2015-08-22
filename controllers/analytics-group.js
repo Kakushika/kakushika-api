@@ -65,4 +65,21 @@ router.get('/:analyticsGroupId', auth, function(req, res, next) {
   });
 });
 
+router.post('/create', auth, function(req, res, next) {
+  var userId = req.decoded.id;
+  var name = req.body.name;
+
+  models.AnalyticsGroup.create({
+    userId: userId,
+    name: name
+  }).then(function(analyticsGroup) {
+    res.json({
+      ok: true,
+      analyticsGroup: analyticsGroup
+    });
+  }).catch(function(err) {
+    next(err);
+  });
+});
+
 module.exports = router;
