@@ -62,7 +62,7 @@ router.get('/slack', auth, function(req, res) {
                     roomGroupId: roomGroup.id,
                     name: channel.name
                   }).then(function(room) {
-                    task(userId, room.id);
+                    task.create(userId, room.id);
                     models.Readable.create({
                       userId: userId,
                       roomId: room.id
@@ -85,7 +85,7 @@ router.get('/slack', auth, function(req, res) {
                     roomGroupId: roomGroup.id,
                     name: group.name
                   }).then(function(room) {
-                    task(userId, room.id);
+                    task.create(userId, room.id);
                     models.Readable.create({
                       userId: userId,
                       roomId: room.id
