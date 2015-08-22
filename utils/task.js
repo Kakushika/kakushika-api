@@ -28,10 +28,7 @@ module.exports = function(user_id, room_id) {
           message: '{ "user": ' + user_id + ', "room": ' + room_id + ', "external": "slack" }'
         }
       },
-      recurrence: {
-        frequency: 'minute',
-        interval: '1',
-      }
+      recurrence: config.recurrence
     }, function(err, result) {
       if (err) {
         console.error(err);
