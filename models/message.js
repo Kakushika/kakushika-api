@@ -10,16 +10,8 @@ module.exports = function(sequelize, DataTypes) {
     roomId: DataTypes.INTEGER,
     raw: DataTypes.TEXT,
     message: DataTypes.TEXT,
+    messagePropertyId: DataTypes.STRING,
     pubDate: DataTypes.DATE
-  }, {
-    classMethods: {
-      associate: function(models) {
-        Message.hasOne(models.MessageProperty, {
-          as: 'Property',
-          foreignKey: 'messageId'
-        });
-      }
-    }
   });
 
   return Message;

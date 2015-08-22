@@ -7,10 +7,6 @@ module.exports = function(sequelize, DataTypes) {
       primaryKey: true,
       autoIncrement: true
     },
-    messageId: {
-      type: DataTypes.INTEGER,
-      unique: true
-    },
     externalUserId: {
       type: DataTypes.INTEGER
     },
@@ -20,6 +16,9 @@ module.exports = function(sequelize, DataTypes) {
       associate: function(models) {
         MessageProperty.belongsTo(models.ExternalUser, {
           foreignKey: 'externalUserId'
+        });
+        MessageProperty.belongsTo(models.Message, {
+          foreignKey: 'messagePropertyId'
         });
       }
     }
