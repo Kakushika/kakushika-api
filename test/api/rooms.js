@@ -17,6 +17,7 @@ describe('Room', function() {
         expect(res.body).to.have.property('ok');
         expect(res.body.ok).to.be.true;
         expect(res.body).to.have.property('rooms');
+        expect(res.body).to.have.property('readableRooms');
         done();
       });
   });
