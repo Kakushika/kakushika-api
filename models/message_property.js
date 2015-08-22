@@ -10,15 +10,19 @@ module.exports = function(sequelize, DataTypes) {
     externalUserId: {
       type: DataTypes.INTEGER
     },
+    messageId: {
+      type: DataTypes.INTEGER,
+      unique: true
+    },
+    isExtracted: {
+      type: DataTypes.BOOLEAN
+    },
     name: DataTypes.STRING
   }, {
     classMethods: {
       associate: function(models) {
         MessageProperty.belongsTo(models.ExternalUser, {
           foreignKey: 'externalUserId'
-        });
-        MessageProperty.belongsTo(models.Message, {
-          foreignKey: 'messagePropertyId'
         });
       }
     }
