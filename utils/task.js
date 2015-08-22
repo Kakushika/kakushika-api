@@ -16,7 +16,7 @@ var connect = function(callback) {
       pem: pem
     });
     var client = schedulerManagement.createSchedulerClient(config.cloudService, config.taskname, credentials, config.url);
-    callback(client);
+    return callback(client);
   });
 };
 
@@ -40,6 +40,29 @@ var task = {
           console.error(err);
         }
         console.log(result);
+      });
+    });
+  },
+  list: function(callback) {
+    connect(function(client) {
+      client.jobs.list({}, function(err, result) {
+        callback(err, result);
+      });
+    });
+  },
+  deleteAll: function(callback) {
+    connect(function(client) {
+      client.jobs.list({}, function(err, result) {
+        if (err) {
+          console.error(err);
+        }
+        result.forEach(function(job, idx) {
+          client.job.deleteMethod(job.id, function() {
+            if (idx === result.length) {
+              callback();
+            }
+          });
+        });
       });
     });
   }
