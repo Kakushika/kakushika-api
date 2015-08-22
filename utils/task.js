@@ -56,8 +56,8 @@ var task = {
         if (err) {
           console.error(err);
         }
-        result.forEach(function(job, idx) {
-          client.job.deleteMethod(job.id, function() {
+        result.jobs.forEach(function(job, idx) {
+          client.jobs.deleteMethod(job.id, function() {
             if (idx === result.length) {
               callback();
             }
