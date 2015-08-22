@@ -10,7 +10,7 @@ module.exports = function(sequelize, DataTypes) {
     roomId: DataTypes.INTEGER,
     raw: DataTypes.TEXT,
     message: DataTypes.TEXT,
-    messagePropertyId: DataTypes.STRING,
+    messagePropertyId: DataTypes.INTEGER,
     pubDate: DataTypes.DATE
   });
 
