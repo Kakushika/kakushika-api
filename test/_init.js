@@ -19,7 +19,8 @@ describe('Initialization', function() {
   it('create user', function(done) {
     models.User.create({
       email: 'hoge@hoge.net',
-      passwordHash: 'hoge'
+      passwordHash: 'hoge',
+      name: 'hoge'
     }).then(function(user) {
       global.userId = user.id;
       console.info(global.userId);
