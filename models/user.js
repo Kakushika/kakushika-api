@@ -47,6 +47,11 @@ module.exports = function(sequelize, DataTypes) {
           as: 'Rooms',
           foreignKey: 'userId'
         });
+        User.belongsToMany(models.AnalyticsGroup, {
+          through: models.AnalyticsUser,
+          as: 'AnalyticsGroups',
+          foreignKey: 'userId'
+        });
       }
     },
     instanceMethods: {

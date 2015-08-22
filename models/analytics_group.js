@@ -35,6 +35,11 @@ module.exports = function(sequelize, DataTypes) {
           as: 'ChildGroups',
           foreignKey: 'parentAnalyticsGroupId'
         });
+        AnalyticsGroup.belongsToMany(models.User, {
+          through: models.AnalyticsUser,
+          as: 'Users',
+          foreignKey: 'analyticsGroupId'
+        });
       }
     }
   });
