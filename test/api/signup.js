@@ -25,7 +25,8 @@ describe('Signup', function() {
       .post('/signup')
       .send({
         'email': 'hoge2@hoge.net',
-        'password': 'hoge'
+        'password': 'hoge',
+        'name': 'hoge'
       })
       .expect(201)
       .end(function(err, res) {
