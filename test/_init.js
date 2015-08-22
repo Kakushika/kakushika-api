@@ -35,7 +35,8 @@ describe('Initialization', function() {
       .set('X-Requested-With', 'XMLHttpRequest')
       .send({
         'email': 'hoge@hoge.net',
-        'password': 'hoge'
+        'password': 'hoge',
+        'name': 'hoge'
       })
       .expect(200)
       .end(function(err, res) {

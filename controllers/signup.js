@@ -8,20 +8,30 @@ var express = require('express'),
   models = require('../models');
 
 router.post('/', function(req, res, next) {
-  if (!req.body.email || !validator.isEmail(req.body.email)) {
+  var email = req.body.email,
+    password = req.body.password,
+    name = req.body.name;
+
+  if (!email || !validator.isEmail(email)) {
     res.status(400).json({
       ok: false,
       message: 'invalid_email'
     });
-  } else if (!req.body.password) {
+  } else if (!password) {
     res.status(400).json({
       ok: false,
       message: 'invalid_password'
     });
+  } else if(!name) {
+    res.status(400).json({
+      ok: false,
+      message: 'invalid_name'
+    });
   } else {
     models.User.create({
-      email: req.body.email,
-      passwordHash: req.body.password
+      email: email,
+      passwordHash: password,
+      name: name
     }).then(function(user) {
       var token = jwt.sign({
         id: user.id
