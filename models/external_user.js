@@ -37,6 +37,11 @@ module.exports = function(sequelize, DataTypes) {
           as: 'Rooms',
           foreignKey: 'externalUserId'
         });
+        ExternalUser.belongsToMany(models.Message, {
+          through: models.MessageProperty,
+          as: 'Messages',
+          foreignKey: 'externalUserId'
+        });
       }
     }
   });
