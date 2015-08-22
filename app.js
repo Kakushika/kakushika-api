@@ -17,7 +17,7 @@ var express = require('express'),
 // Use helmet to secure Express headers
 app.use(helmet());
 app.use(cors({
-  origin: config.host,
+  origin: config.cors.host,
   allowedHeaders: ['Origin', 'X-Requested-With', 'Content-Type', 'Accept', 'x-access-token']
 }));
 

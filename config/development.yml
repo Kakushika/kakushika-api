@@ -11,3 +11,6 @@ db:
   dialectOptions:
     encrypt: true
   logging: false
+
+cors:
+  host: '*'

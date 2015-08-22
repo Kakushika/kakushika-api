@@ -20,6 +20,9 @@ db:
 jwt:
   secret: 'OZ3MbJn98K5CqSR6ZiY27Hvz6uJ13dEQ'
 
+cors:
+  host: 'http://kksk.io'
+
 login:
   password:
     cost: 10
