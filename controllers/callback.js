@@ -57,7 +57,7 @@ router.get('/slack', auth, function(req, res) {
                 data.channels.forEach(function(channel) {
                   models.Room.create({
                     userId: userId,
-                    externalType: 'slack',
+                    externalType: 'slack:channel',
                     externalId: channel.id,
                     roomGroupId: roomGroup.id,
                     name: channel.name
@@ -80,7 +80,7 @@ router.get('/slack', auth, function(req, res) {
                 data.groups.forEach(function(group) {
                   models.Room.create({
                     userId: userId,
-                    externalType: 'slack',
+                    externalType: 'slack:group',
                     externalId: group.id,
                     roomGroupId: roomGroup.id,
                     name: group.name
