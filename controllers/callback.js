@@ -39,7 +39,7 @@ router.get('/slack', auth, function(req, res) {
             models.Claim.create({
               userId: userId,
               key: 'slack:' + result.body.team.id + ':token',
-              token: data.access_token
+              value: data.access_token
             });
             models.RoomGroup.create({
               userId: userId,
