@@ -39,6 +39,6 @@ sequelize.dialect.QueryGenerator.escape = function(value, field){
     }
     return escaped;
   }
-}
+};
 
 module.exports = db;

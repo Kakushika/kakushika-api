@@ -35,6 +35,12 @@ router.get('/room/:room_id', auth, function(req, res, next) {
         'message',
         'pubDate'
       ],
+      order: [
+        [
+          'pubDate',
+          'DESC'
+        ]
+      ],
       offset: offset,
       limit: limit
     }]
@@ -77,6 +83,12 @@ router.get('/analytics-group-id/:analytics_group_id', auth, function(req, res, n
           'id',
           'message',
           'pubDate'
+        ],
+        order: [
+          [
+            'pubDate',
+            'DESC'
+          ]
         ],
         offset: offset,
         limit: limit
