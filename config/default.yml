@@ -24,6 +24,9 @@ login:
   password:
     cost: 10
 
+cors:
+  host: 'http://kksk.io'
+
 slack:
   api_url: 'https://slack.com/api'
   client_id: '9266174033.9265709104'
