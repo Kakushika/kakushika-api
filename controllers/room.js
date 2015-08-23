@@ -43,7 +43,47 @@ router.get('/', auth, function(req, res, next) {
   });
 });
 
-router.get('/:external_id', auth, function(req, res, next) {
+router.get('/:room_id', auth, function(req, res, next) {
+  var userId = req.decoded.id,
+    roomId = req.params.room_id;
+
+  models.Room.findById(roomId, {
+    where: {
+      userId: userId
+    }
+  }).then(function(room) {
+    return res.json({
+      ok: true,
+      room: room
+    });
+  }).catch(function(err) {
+    return next(err);
+  });
+});
+
+router.get('/:room_id/external_user', auth, function(req, res, next) {
+  var userId = req.decoded.id,
+    roomId = req.params.room_id;
+
+  models.Room.findById(roomId,{
+    where: {
+      userId: userId
+    },
+    include: [{
+      model: models.ExternalUser,
+      as: 'ExternalUsers'
+    }]
+  }).then(function(room) {
+    return res.json({
+      ok: true,
+      externalUser: room.ExternalUsers
+    });
+  }).catch(function(err) {
+    return next(err);
+  });
+});
+
+router.get('/external/:external_id', auth, function(req, res, next) {
   var userId = req.decoded.id,
     externalId = req.params.external_id;
 
