@@ -3,7 +3,8 @@
 var supertest = require('supertest'),
   app = require('../app'),
   models = require('../models'),
-  date = require('../utils/date');
+  date = require('../utils/date'),
+  task = require('../utils/task');
 
 describe('Initialization', function() {
   it('cleanup database', function(done) {
@@ -13,6 +14,12 @@ describe('Initialization', function() {
       done();
     }).catch(function(err) {
       console.error(err);
+    });
+  });
+
+  it('cleanup tasks', function(done) {
+    task.deleteAll(function() {
+      done();
     });
   });
 
@@ -86,7 +93,7 @@ describe('Initialization', function() {
       raw: 'hogehoge',
       message: 'hogehoge',
       pubDate: date.getTimeStamp()
-    }).then(function () {
+    }).then(function() {
       done();
     }).catch(function(err) {
       console.error(err);
