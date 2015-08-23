@@ -1,5 +1,9 @@
 'use strict';
 
+if(process.env.CI) {
+  process.env.NODE_ENV = 'test';
+}
+
 var fs = require('fs'),
   path = require('path'),
   config = require('config'),

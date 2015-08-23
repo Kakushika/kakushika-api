@@ -1,0 +1,27 @@
+host:
+  'http://localhost:8000'
+
+db:
+  host: 'kksk-test.database.windows.net'
+  database: 'kksk-test'
+  username: 'kksk'
+  password: 'HackM2015'
+  dialect: 'mssql'
+  pool:
+    max: 5
+    min: 0
+    idel: 10000
+  dialectOptions:
+    encrypt: true
+  logging: false
+
+cors:
+  host: '*'
+
+slack:
+  api_url: 'https://slack.com/api'
+  client_id: '2535714809.8192930512'
+  client_secret: 'adc1deb59f3f0dc109658223208990d5'
+  callback_path: '/#/callback/slack/success'
+  redirect_path:
+    error: '/#/callback/slack/error'
