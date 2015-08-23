@@ -61,7 +61,7 @@ router.get('/:room_id', auth, function(req, res, next) {
   });
 });
 
-router.get('/:room_id/external_user', auth, function(req, res, next) {
+router.get('/:room_id/external-user', auth, function(req, res, next) {
   var userId = req.decoded.id,
     roomId = req.params.room_id;
 
