@@ -1,3 +1,6 @@
+host:
+  'http://localhost'
+
 db:
   host: 'kksk-test.database.windows.net'
   database: 'kksk-test'
@@ -12,5 +15,10 @@ db:
     encrypt: true
   logging: false
 
-cors:
-  host: '*'
+slack:
+  api_url: 'https://slack.com/api'
+  client_id: ' 	2535714809.8192930512'
+  client_secret: 'adc1deb59f3f0dc109658223208990d5'
+  callback_path: '/#/callback/slack/success'
+  redirect_path:
+    error: '/#/callback/slack/error'
