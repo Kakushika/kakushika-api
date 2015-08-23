@@ -15,7 +15,6 @@ module.exports = function(sequelize, DataTypes) {
     classMethods: {
       associate: function(models) {
         Message.hasOne(models.MessageProperty, {
-          as: 'MessageProperty',
           foreignKey: 'messageId'
         });
         Message.belongsToMany(models.ExternalUser, {
