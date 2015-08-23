@@ -73,7 +73,7 @@ router.post('/', auth, function(req, res, next) {
     userId: userId,
     name: name
   }).then(function(analyticsGroup) {
-    res.status(201).son({
+    res.status(201).json({
       ok: true,
       analyticsGroup: analyticsGroup
     });
