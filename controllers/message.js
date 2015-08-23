@@ -30,11 +30,16 @@ router.get('/room/:room_id', auth, function(req, res, next) {
     }, {
       model: models.Message,
       as: 'Messages',
-      attribute: [
+      attributes: [
         'id',
+        'roomId',
         'message',
         'pubDate'
       ],
+      include: [{
+        model: models.MessageProperty,
+        as: 'MessageProperty'
+      }],
       order: [
         [
           'pubDate',
