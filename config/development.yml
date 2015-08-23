@@ -1,5 +1,5 @@
 host:
-  'http://localhost'
+  'http://localhost:8000'
 
 db:
   host: 'kksk-test.database.windows.net'
@@ -27,7 +27,7 @@ azure:
 
 slack:
   api_url: 'https://slack.com/api'
-  client_id: ' 	2535714809.8192930512'
+  client_id: '2535714809.8192930512'
   client_secret: 'adc1deb59f3f0dc109658223208990d5'
   callback_path: '/#/callback/slack/success'
   redirect_path:
