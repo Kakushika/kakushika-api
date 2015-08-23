@@ -14,3 +14,10 @@ db:
 
 cors:
   host: '*'
+
+azure:
+  scheduler:
+    subscriptionId: 'bfa4c371-3b8c-4800-81b9-3b368ccfcaca'
+    taskname: 'kksktask-dev'
+    sasToken: '?sv=2012-02-12&se=2017-02-23T00%3A25%3A42Z&sp=a&sig=5PVaxQasofff5piUQUYtK36fpq5dJVbwrGiWAMRHUv0%3D'
+    queuename: 'task-dev'
