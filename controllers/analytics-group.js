@@ -10,7 +10,8 @@ router.get('/', auth, function(req, res, next) {
 
   models.AnalyticsGroup.findAll({
     attributes: [
-      'id'
+      'id',
+      'name'
     ],
     where: {
       userId: userId
