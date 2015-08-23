@@ -23,7 +23,9 @@ router.post('/', function(req, res, next) {
     });
   } else {
     models.User.findOne({
-      email: email
+      where: {
+        email: email
+      }
     }).then(function(user) {
       if (!user) {
         return res.status(401).json({
