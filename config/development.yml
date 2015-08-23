@@ -1,5 +1,5 @@
 host:
-  'http://localhost'
+  'http://localhost:8000'
 
 db:
   host: 'kksk-test.database.windows.net'
@@ -15,10 +15,21 @@ db:
     encrypt: true
   logging: false
 
+cors:
+  host: '*'
+
+azure:
+  scheduler:
+    subscriptionId: 'bfa4c371-3b8c-4800-81b9-3b368ccfcaca'
+    taskname: 'kksktask-dev'
+    sasToken: '?sv=2012-02-12&se=2017-02-23T00%3A25%3A42Z&sp=a&sig=5PVaxQasofff5piUQUYtK36fpq5dJVbwrGiWAMRHUv0%3D'
+    queuename: 'task-dev'
+
 slack:
   api_url: 'https://slack.com/api'
-  client_id: ' 	2535714809.8192930512'
+  client_id: '2535714809.8192930512'
   client_secret: 'adc1deb59f3f0dc109658223208990d5'
   callback_path: '/#/callback/slack/success'
   redirect_path:
     error: '/#/callback/slack/error'
+

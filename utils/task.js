@@ -29,7 +29,7 @@ var task = {
           type: 'storageQueue',
           queueMessage: {
             storageAccountName: 'kksk',
-            queueName: 'task',
+            queueName: config.queuename,
             sasToken: config.sasToken,
             message: '{ "user": ' + user_id + ', "room": ' + room_id + ', "external": "slack" }'
           }
