@@ -24,9 +24,9 @@ router.get('/room/:room_id', auth, function(req, res, next) {
     include: [{
       model: models.User,
       as: 'ReadableUsers',
-      where: {
-        id: userId
-      }
+      attributes: [
+        'id'
+      ]
     }, {
       model: models.Message,
       as: 'Messages',
@@ -45,15 +45,22 @@ router.get('/room/:room_id', auth, function(req, res, next) {
       limit: limit
     }]
   }).then(function(room) {
-    if (room.ReadableUsers.length !== 1) {
-      return res.status(404).json({
-        ok: false
+    if (room.userId === userId) {
+      return res.json({
+        ok: true,
+        messages: room.Messages,
       });
     }
-    return res.json({
-      ok: true,
-      messages: room.Messages,
-      raw: room
+    room.ReadableUsers.forEach(function(readableUser) {
+      if (readableUser.id === userId) {
+        return res.json({
+          ok: true,
+          messages: room.Messages,
+        });
+      }
+    });
+    return res.status(404).json({
+      ok: false
     });
   }).catch(function(err) {
     next(err);
@@ -115,7 +122,9 @@ router.get('/search', auth, function(req, res, next) {
     qPubDate = req.query.pub_date, // assume Date, timezone
     qMessage = req.query.message, // like, message
     qUserId = req.query.user_id | 0, // external parse int
-    qUserName = req.query.user_name; // external
+    qUserName = req.query.user_name, // external
+    offset = req.query.offset | 0,
+    limit = req.query.limit | 10;
 
   var roomQuery = {};
   if (qRoomId) {
@@ -144,6 +153,10 @@ router.get('/search', auth, function(req, res, next) {
   } else if (qUserName) {
     externalQuery.name = qUserName;
     isExternalQuery = true;
+  }
+
+  if (20 < limit) {
+    limit = 20;
   }
 
   models.User.findById(userId, {
@@ -179,7 +192,8 @@ router.get('/search', auth, function(req, res, next) {
         order: [
           ['pubDate', 'DESC']
         ],
-        limit: 10
+        offset: offset,
+        limit: limit
       }]
     }, {
       model: models.Room,
@@ -210,7 +224,8 @@ router.get('/search', auth, function(req, res, next) {
         order: [
           ['pubDate', 'DESC']
         ],
-        limit: 10
+        offset: offset,
+        limit: limit
       }]
     }]
   }).then(function(user) {
@@ -269,6 +284,103 @@ router.get('/search', auth, function(req, res, next) {
       ok: true,
       rooms: Rooms,
       readableRooms: ReadableRooms
+    });
+  }).catch(function(err) {
+    return next(err);
+  });
+});
+
+router.get('/search/analytics-group-id/:analytics_group_id', auth, function(req, res, next) {
+  var userId = req.decoded.id,
+    analyticsGroupId = req.params.analytics_group_id,
+    qRoomId = req.query.room_id | 0, // room parse int
+    qPubDate = req.query.pub_date, // assume Date, timezone
+    qMessage = req.query.message, // like, message
+    qUserId = req.query.user_id | 0, // external parse int
+    qUserName = req.query.user_name, // external
+    offset = req.query.offset | 0,
+    limit = req.query.limit | 10;
+
+  var roomQuery = {};
+  if (qRoomId) {
+    roomQuery.id = qRoomId;
+  }
+
+  var messageQuery = {};
+  if (qPubDate) {
+    var today = new Date(qPubDate);
+    messageQuery.pubDate = {
+      $lte: today, // qPubDate <= pubDate
+      $gt: new Date(today + 24 * 60 * 60 * 1000) // pubDate < qPubDate
+    };
+  }
+  if (qMessage) {
+    messageQuery.message = {
+      $like: '%' + qMessage + '%'
+    };
+  }
+
+  var externalQuery = {},
+    isExternalQuery = false;
+  if (qUserId) {
+    externalQuery.externalId = qUserId;
+    isExternalQuery = true;
+  } else if (qUserName) {
+    externalQuery.name = qUserName;
+    isExternalQuery = true;
+  }
+
+  if (20 < limit) {
+    limit = 20;
+  }
+
+  models.AnalyticsGroup.findById(analyticsGroupId, {
+    include: [{
+      model: models.User,
+      as: 'Users',
+      attributes: [
+        'id'
+      ],
+      where: {
+        id: userId
+      }
+    }, {
+      model: models.Room,
+      as: 'Rooms',
+      attributes: [
+        'id'
+      ],
+      where: roomQuery,
+      include: [{
+        model: models.Message,
+        as: 'Messages',
+        attributes: [
+          'id',
+          'roomId',
+          'message',
+          'pubDate'
+        ],
+        where: messageQuery,
+        include: [{
+          model: models.ExternalUser,
+          as: 'ExternalUsers',
+          attributes: [
+            'externalId',
+            'name'
+          ],
+          where: externalQuery
+        }],
+        order: [
+          ['pubDate', 'DESC']
+        ],
+        offset: offset,
+        limit: limit
+      }]
+    }]
+  }).then(function(analyticsGroup) {
+    return res.json({
+      ok: true,
+      analyticsGroup: analyticsGroup
     });
   }).catch(function(err) {
     return next(err);
