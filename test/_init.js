@@ -17,11 +17,13 @@ describe('Initialization', function() {
     });
   });
 
-  it('cleanup tasks', function(done) {
-    task.deleteAll(function() {
-      done();
+  if (!process.env.CI) {
+    it('cleanup tasks', function(done) {
+      task.deleteAll(function() {
+        done();
+      });
     });
-  });
+  }
 
   it('create user', function(done) {
     models.User.create({
