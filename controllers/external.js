@@ -5,7 +5,7 @@ var express = require('express'),
   auth = require('../middleware/auth'),
   models = require('../models');
 
-router.put('/external_id', auth, function(req, res, next) {
+router.put('/:external_id', auth, function(req, res, next) {
   // var userId = req.decoded.id;
   var externalId = req.params.external_id | 0, // parse int
     otherUserId = req.body.user_id | 0, // parse int
