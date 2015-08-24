@@ -2,8 +2,8 @@ host:
   'http://localhost:8000'
 
 db:
-  host: 'kksk-test.database.windows.net'
-  database: 'kksk-test'
+  host: 'kksk-dev.database.windows.net'
+  database: 'kksk-dev'
   username: 'kksk'
   password: 'HackM2015'
   dialect: 'mssql'
