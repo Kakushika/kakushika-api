@@ -20,50 +20,17 @@ router.get('/room/:room_id', auth, function(req, res, next) {
   if (100 < limit) {
     limit = 100;
   }
-  models.Room.findById(roomId, {
-    include: [{
-      model: models.User,
-      as: 'ReadableUsers',
-      attributes: [
-        'id'
-      ]
-    }, {
-      model: models.Message,
-      as: 'Messages',
-      attribute: [
-        'id',
-        'message',
-        'pubDate'
-      ],
-      order: [
-        [
-          'pubDate',
-          'DESC'
-        ]
-      ],
-      offset: offset,
-      limit: limit
-    }]
-  }).then(function(room) {
-    if (room.userId === userId) {
-      return res.json({
-        ok: true,
-        messages: room.Messages,
-      });
-    }
-    room.ReadableUsers.forEach(function(readableUser) {
-      if (readableUser.id === userId) {
-        return res.json({
-          ok: true,
-          messages: room.Messages,
-        });
-      }
+
+  var query = 'SELECT * FROM dbo.Messages AS m INNER JOIN dbo.MessageProperties AS p  ON m.id = p.messageId INNER JOIN dbo.Readables AS r ON m.roomId = r.roomId INNER JOIN dbo.Rooms AS rm ON m.roomId = rm.id WHERE m.roomId = ? AND(r.userId = ? OR rm.userId = ?) ORDER BY m.pubDate DESC OFFSET(?) ROWS FETCH NEXT(?) ROWS ONLY ';
+
+  models.sequelize.query(query, {
+    replacements: [roomId, userId, userId, offset, limit],
+    type: models.sequelize.QueryTypes.SELECT,
+  }).then(function(messages) {
+    return res.json({
+      ok: true,
+      messages: messages
     });
-    return res.status(404).json({
-      ok: false
-    });
-  }).catch(function(err) {
-    next(err);
   });
 });
 
