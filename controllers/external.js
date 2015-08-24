@@ -52,11 +52,11 @@ router.put('/:external_id', auth, function(req, res, next) {
     }).catch(function(err) {
       return next(err);
     });
+  } else {
+    return res.status(400).json({
+      ok: false
+    });
   }
-
-  return res.status(400).json({
-    ok: false
-  });
 });
 
 module.exports = router;
