@@ -42,44 +42,32 @@ router.get('/analytics-group-id/:analytics_group_id', auth, function(req, res, n
     analyticsGroupId = req.params.analytics_group_id | 0, // parse int
     offset = req.query.offset | 0,
     limit = req.query.limit | 10;
+    
+  var sql = "SELECT m.*, e.name FROM [dbo].[Messages] AS m"
+          + " INNER JOIN [dbo].[MessageProperties] AS p"
+            + " ON m.id = p.messageId"
+          + " INNER JOIN [dbo].[Rooms] AS r"
+            + " ON r.id = m.roomId"
+          + " INNER JOIN [dbo].[AnalyticsGroupRooms] AS agr"
+            + " ON r.id = agr.roomId"
+          + " INNER JOIN [dbo].[ExternalUsers] AS e"
+            + " ON p.externalUserId = e.id"
+          + " WHERE agr.analyticsGroupId = ?"
+          + " ORDER BY m.pubDate DESC"
+          + " OFFSET(?) ROWS FETCH NEXT (?) ROWS ONLY";
 
   if (analyticsGroupId === 0) {
     return res.status(400).json({
       ok: false
     });
   }
-
-  models.AnalyticsGroup.findById(analyticsGroupId, {
-    include: [{
-      model: models.Room,
-      as: 'Rooms',
-      include: [{
-        model: models.Message,
-        as: 'Messages',
-        attribute: [
-          'id',
-          'message',
-          'pubDate'
-        ],
-        order: [
-          [
-            'pubDate',
-            'DESC'
-          ]
-        ],
-        offset: offset,
-        limit: limit
-      }]
-    }]
-  }).then(function(analyticsGroup) {
-    if (analyticsGroup.userId !== userId) {
-      return res.status(404).json({
-        ok: false
-      });
-    }
+  models.sequelize.query(sql,{
+    replacements: [analyticsGroupId, offset, limit], 
+    type: models.sequelize.QueryTypes.SELECT
+  }).then(function(messages){
     res.json({
       ok: true,
-      rooms: analyticsGroup.Rooms
+      messages: messages
     });
   }).catch(function(err) {
     return next(err);
