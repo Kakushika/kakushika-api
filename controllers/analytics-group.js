@@ -69,7 +69,7 @@ router.get('/:analyticsGroupId', auth, function(req, res, next) {
 router.get('/:analyticsGroupId/external-user', auth, function(req, res, next) {
   var userId = req.decoded.id,
     analyticsGroupId = req.params.analyticsGroupId;
-  var sql = " SELECT DISTINCT e.* FROM[dbo].[Messages] AS m"
+  var sql = " SELECT DISTINCT e.*, u.name as userName FROM[dbo].[Messages] AS m"
           + " INNER JOIN [dbo].[MessageProperties] AS p"
           + " 	ON m.id = p.messageId"
           + " INNER JOIN [dbo].[Rooms] AS r"
@@ -78,6 +78,8 @@ router.get('/:analyticsGroupId/external-user', auth, function(req, res, next) {
           + " 	ON r.id = agr.roomId"
           + " INNER JOIN [dbo].[ExternalUsers] AS e"
           + " 	ON p.externalUserId = e.id"
+          + " LEFT OUTER JOIN [dbo].[Users] AS u"
+          + "   ON e.userId = u.id"
           + " WHERE agr.analyticsGroupId = ?";
   models.sequelize.query(sql, { 
     replacements: [analyticsGroupId], 
