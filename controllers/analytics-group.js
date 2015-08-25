@@ -66,6 +66,32 @@ router.get('/:analyticsGroupId', auth, function(req, res, next) {
   });
 });
 
+router.get('/:analyticsGroupId/external-user', auth, function(req, res, next) {
+  var userId = req.decoded.id,
+    analyticsGroupId = req.params.analyticsGroupId;
+  var sql = " SELECT DISTINCT e.* FROM[dbo].[Messages] AS m"
+          + " INNER JOIN [dbo].[MessageProperties] AS p"
+          + " 	ON m.id = p.messageId"
+          + " INNER JOIN [dbo].[Rooms] AS r"
+          + " 	ON r.id = m.roomId"
+          + " INNER JOIN [dbo].[AnalyticsGroupRooms] AS agr"
+          + " 	ON r.id = agr.roomId"
+          + " INNER JOIN [dbo].[ExternalUsers] AS e"
+          + " 	ON p.externalUserId = e.id"
+          + " WHERE agr.analyticsGroupId = ?";
+  models.sequelize.query(sql, { 
+    replacements: [analyticsGroupId], 
+    type: models.sequelize.QueryTypes.SELECT }
+  ).then(function(externalUsers) {
+    return res.json({
+      ok: true,
+      externalUser: externalUsers
+    });
+  }).catch(function(err) {
+    return next(err);
+  });
+});
+
 router.post('/', auth, function(req, res, next) {
   var userId = req.decoded.id,
     name = req.body.name;
