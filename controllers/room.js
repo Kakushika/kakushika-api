@@ -86,22 +86,6 @@ router.get('/:room_id/external-user', auth, function(req, res, next) {
     }).catch(function(err) {
       return next(err);
     });
-  // models.Room.findById(roomId,{
-  //   where: {
-  //     userId: userId
-  //   },
-  //   include: [{
-  //     model: models.ExternalUser,
-  //     as: 'ExternalUsers'
-  //   }]
-  // }).then(function(externalUsers) {
-  //   return res.json({
-  //     ok: true,
-  //     externalUser: externalUsers
-  //   });
-  // }).catch(function(err) {
-  //   return next(err);
-  // });
 });
 
 router.get('/external/:external_id', auth, function(req, res, next) {
