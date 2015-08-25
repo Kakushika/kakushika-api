@@ -112,9 +112,14 @@ router.put('/:analytics_group_id/rooms', auth, function(req, res, next) {
         analyticsGroupId: analyticsGroupId,
         roomId: roomId
       }).then(function(analyticsGroupRoom) {
-        return res.json({
-          ok: true,
-          analyticsGroupRoom: analyticsGroupRoom
+        models.Room.findById(analyticsGroupRoom.roomId).then(function(room){
+          analyticsGroupRoom.dataValues.room = room.dataValues;
+          return res.json({
+            ok: true,
+            analyticsGroupRoom: analyticsGroupRoom
+          });
+        }).catch(function(err) {
+          return next(err);
         });
       }).catch(function(err) {
         return next(err);
@@ -156,9 +161,14 @@ router.put('/:analytics_group_id/groups', auth, function(req, res, next) {
         parentAnalyticsGroupId: analyticsGroupId,
         childAnalyticsGroupId: groupId
       }).then(function(analyticsGroupMesh) {
-        return res.json({
-          ok: true,
-          analyticsGroupMesh: analyticsGroupMesh
+        models.AnalyticsGroup.findById(analyticsGroupMesh.childAnalyticsGroupId).then(function(analyticsGroup){
+          analyticsGroupMesh.dataValues.child = analyticsGroup.dataValues;
+          return res.json({
+            ok: true,
+            analyticsGroupMesh: analyticsGroupMesh
+          });
+        }).catch(function(err) {
+          return next(err);
         });
       }).catch(function(err) {
         return next(err);
