@@ -6,8 +6,7 @@ var express = require('express'),
   request = require('superagent'),
   Slack = require('slack-api'),
   auth = require('../middleware/auth'),
-  models = require('../models'),
-  task = require('../utils/task');
+  models = require('../models');
 
 router.get('/slack', auth, function(req, res) {
   var userId = req.decoded.id;
@@ -62,7 +61,6 @@ router.get('/slack', auth, function(req, res) {
                     roomGroupId: roomGroup.id,
                     name: channel.name
                   }).then(function(room) {
-                    task.create(userId, room.id);
                     models.Readable.create({
                       userId: userId,
                       roomId: room.id
@@ -85,7 +83,6 @@ router.get('/slack', auth, function(req, res) {
                     roomGroupId: roomGroup.id,
                     name: group.name
                   }).then(function(room) {
-                    task.create(userId, room.id);
                     models.Readable.create({
                       userId: userId,
                       roomId: room.id
