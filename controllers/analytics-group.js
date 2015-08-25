@@ -212,7 +212,8 @@ router.put('/:analytics_group_id/groups', auth, function(req, res, next) {
 router.put('/:analytics_group_id/users', auth, function(req, res, next) {
   var userId = req.decoded.id,
     analyticsGroupId = req.params.analytics_group_id,
-    addUserId = req.body.user_id;
+    addUserId = req.body.user_id,
+    email = req.body.email;
 
   models.AnalyticsGroup.findById(analyticsGroupId, {
     where: {
@@ -224,8 +225,11 @@ router.put('/:analytics_group_id/users', auth, function(req, res, next) {
         ok: false
       });
     }
-    models.User.findById(addUserId)
-      .then(function(user) {
+    models.User.findOne({
+      where:{
+        email: email
+      }
+    }).then(function(user) {
         if (!user) {
           return res.status(404).json({
             ok: false
