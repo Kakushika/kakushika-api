@@ -113,8 +113,8 @@ router.get('/search', auth, function(req, res, next) {
   }
 
   if (qPubDate) {
-    var from = new Date(qPubDate);
-    var to = new Date(from + 24 * 60 * 60 * 1000); // pubDate < qPubDate
+    var from = date.ISODateString(new Date(qPubDate));
+    var to = date.ISODateString(new Date(from + 24 * 60 * 60 * 1000)); // pubDate < qPubDate
     where.push('r.pubDate BETWEEN ? AND ?');
     param.push(from, to);
   }
