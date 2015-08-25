@@ -64,23 +64,44 @@ router.get('/:room_id', auth, function(req, res, next) {
 router.get('/:room_id/external-user', auth, function(req, res, next) {
   var userId = req.decoded.id,
     roomId = req.params.room_id;
-
-  models.Room.findById(roomId,{
-    where: {
-      userId: userId
-    },
-    include: [{
-      model: models.ExternalUser,
-      as: 'ExternalUsers'
-    }]
-  }).then(function(room) {
-    return res.json({
-      ok: true,
-      externalUser: room.ExternalUsers
+  var sql = "SELECT e.id AS id"
+              + ", e.externalType AS externalType"
+              + ", e.name AS name"
+              + ", u.id AS userId"
+              + ", u.name AS userName"
+            + " FROM [dbo].[ExternalUsers] AS e"
+            + " LEFT OUTER JOIN [dbo].[Users] AS u"
+              + " ON e.userId = u.id"
+            + " INNER JOIN [dbo].[RoomExternalUsers] AS re"
+              + " ON e.id = re.externalUserId"
+            + " WHERE re.roomId = ?";
+    models.sequelize.query(sql, { 
+      replacements: [roomId], 
+      type: models.sequelize.QueryTypes.SELECT }
+    ).then(function(externalUsers) {
+      return res.json({
+        ok: true,
+        externalUser: externalUsers
+      });
+    }).catch(function(err) {
+      return next(err);
     });
-  }).catch(function(err) {
-    return next(err);
-  });
+  // models.Room.findById(roomId,{
+  //   where: {
+  //     userId: userId
+  //   },
+  //   include: [{
+  //     model: models.ExternalUser,
+  //     as: 'ExternalUsers'
+  //   }]
+  // }).then(function(externalUsers) {
+  //   return res.json({
+  //     ok: true,
+  //     externalUser: externalUsers
+  //   });
+  // }).catch(function(err) {
+  //   return next(err);
+  // });
 });
 
 router.get('/external/:external_id', auth, function(req, res, next) {
