@@ -3,7 +3,8 @@
 var express = require('express'),
   router = express.Router(),
   auth = require('../middleware/auth'),
-  models = require('../models');
+  models = require('../models'),
+  date = require('../utils/date');
 
 router.get('/room/:room_id', auth, function(req, res, next) {
   var userId = req.decoded.id,
@@ -31,6 +32,8 @@ router.get('/room/:room_id', auth, function(req, res, next) {
       ok: true,
       messages: messages
     });
+  }).catch(function(err) {
+    return next(err);
   });
 });
 
@@ -93,164 +96,69 @@ router.get('/search', auth, function(req, res, next) {
     offset = req.query.offset | 0,
     limit = req.query.limit | 10;
 
-  var roomQuery = {};
-  if (qRoomId) {
-    roomQuery.id = qRoomId;
+  var sql = 'SELECT r.id AS messageId,r.roomId,r.message,r.pubDate,rp.externalId,rp.externalType,rp.name FROM dbo.Users AS m ' +
+    'INNER JOIN dbo.Rooms AS p  ON m.id = p.userId ' +
+    'INNER JOIN dbo.Messages AS r ON p.id = r.roomId ' +
+    'INNER JOIN dbo.MessageProperties AS rm ON r.id = rm.messageId ' +
+    'INNER JOIN dbo.ExternalUsers AS rp ON rm.externalUserId = rp.id';
+  var where = [];
+  var param = [];
+
+  where.push('m.id = ?');
+  param.push(userId);
+
+  if(qRoomId) {
+    where.push('p.id = ?');
+    param.push(qRoomId);
   }
 
-  var messageQuery = {};
   if (qPubDate) {
-    var today = new Date(qPubDate);
-    messageQuery.pubDate = {
-      $lte: today, // qPubDate <= pubDate
-      $gt: new Date(today + 24 * 60 * 60 * 1000) // pubDate < qPubDate
-    };
-  }
-  if (qMessage) {
-    messageQuery.message = {
-      $like: '%' + qMessage + '%'
-    };
+    var from = new Date(qPubDate);
+    var to = new Date(from + 24 * 60 * 60 * 1000); // pubDate < qPubDate
+    where.push('r.pubDate BETWEEN ? AND ?');
+    param.push(from, to);
   }
 
-  var externalQuery = {},
-    isExternalQuery = false;
+  if (qMessage) {
+    where.push('r.message LIKE \'%?%\'');
+    param.push(qMessage);
+  }
+
+  var  isExternalQuery = false;
   if (qUserId) {
-    externalQuery.externalId = qUserId;
+    where.push('rm.externalUserId = ?');
+    param.push(qUserId);
     isExternalQuery = true;
   } else if (qUserName) {
-    externalQuery.name = qUserName;
+    where.push('rm.name = ?');
+    param.push(qUserName);
     isExternalQuery = true;
   }
+  sql += ' WHERE ' + where.join(' AND ');
+
+  sql += ' UNION SELECT r.id AS messageId,r.roomId,r.message,r.pubDate,rp.externalId,rp.externalType,rp.name FROM dbo.Users AS m '+
+  'INNER JOIN dbo.Readables AS rd ON rd.userId = m.id '+
+  'INNER JOIN dbo.Rooms AS p  ON p.id = rd.roomId ' +
+  'INNER JOIN dbo.Messages AS r ON p.id = r.roomId ' +
+  'INNER JOIN dbo.MessageProperties AS rm ON r.id = rm.messageId '+
+  'INNER JOIN dbo.ExternalUsers AS rp ON rm.externalUserId = rp.id';
+  sql += ' WHERE ' + where.join(' AND ');
+  param = param.concat(param);
 
   if (20 < limit) {
     limit = 20;
   }
 
-  models.User.findById(userId, {
-    attributes: [
-      'id'
-    ],
-    include: [{
-      model: models.Room,
-      as: 'Rooms',
-      attributes: [
-        'id'
-      ],
-      where: roomQuery,
-      include: [{
-        model: models.Message,
-        as: 'Messages',
-        attributes: [
-          'id',
-          'roomId',
-          'message',
-          'pubDate'
-        ],
-        where: messageQuery,
-        include: [{
-          model: models.ExternalUser,
-          as: 'ExternalUsers',
-          attributes: [
-            'externalId',
-            'name'
-          ],
-          where: externalQuery
-        }],
-        order: [
-          ['pubDate', 'DESC']
-        ],
-        offset: offset,
-        limit: limit
-      }]
-    }, {
-      model: models.Room,
-      as: 'ReadableRooms',
-      attributes: [
-        'id'
-      ],
-      where: roomQuery,
-      include: [{
-        model: models.Message,
-        as: 'Messages',
-        attributes: [
-          'id',
-          'roomId',
-          'message',
-          'pubDate'
-        ],
-        where: messageQuery,
-        include: [{
-          model: models.ExternalUser,
-          as: 'ExternalUsers',
-          attributes: [
-            'externalId',
-            'name'
-          ],
-          where: externalQuery
-        }],
-        order: [
-          ['pubDate', 'DESC']
-        ],
-        offset: offset,
-        limit: limit
-      }]
-    }]
-  }).then(function(user) {
-    var parseRoom = function(room) {
-        if (room.Messages.length !== 0) {
-          var Room = {
-            id: room.id,
-            Messages: []
-          };
-          room.Messages.forEach(function(message) {
-            if (message.ExternalUsers.length !== 0) {
-              Room.Messages.push({
-                id: message.id,
-                roomId: message.roomId,
-                message: message.message,
-                pubDate: message.pubDate,
-                externalUserId: message.ExternalUsers[0].externalId,
-                externalUserName: message.ExternalUsers[0].name
-              });
-            } else if (!isExternalQuery) {
-              Room.Messages.push({
-                id: message.id,
-                roomId: message.roomId,
-                message: message.message,
-                pubDate: message.pubDate,
-                externalUserId: null,
-                externalUserName: null
-              });
-            }
-          });
-          return Room;
-        }
-      },
-      Rooms = [],
-      ReadableRooms = [];
+  sql += ' ORDER BY r.pubDate DESC OFFSET(?) ROWS FETCH NEXT(?) ROWS ONLY ';
+  param.push(offset, limit);
 
-    if (!user) {
-      return res.status(401).json({
-        ok: false
-      });
-    }
-
-    user.Rooms.forEach(function(room) {
-      var Room = parseRoom(room);
-      if (Room) {
-        Rooms.push(Room);
-      }
-    });
-    user.ReadableRooms.forEach(function(room) {
-      var Room = parseRoom(room);
-      if (Room) {
-        ReadableRooms.push(Room);
-      }
-    });
+  models.sequelize.query(sql, {
+    replacements: param,
+    type: models.sequelize.QueryTypes.SELECT,
+  }).then(function(messages) {
     return res.json({
       ok: true,
-      rooms: Rooms,
-      readableRooms: ReadableRooms
+      messages: messages
     });
   }).catch(function(err) {
     return next(err);
