@@ -38,33 +38,22 @@ router.get('/room/:room_id', auth, function(req, res, next) {
 });
 
 router.get('/analytics-group-id/:analytics_group_id', auth, function(req, res, next) {
-  var userId = req.decoded.id,
-    analyticsGroupId = req.params.analytics_group_id | 0, // parse int
+  // var userId = req.decoded.id;
+  var analyticsGroupId = req.params.analytics_group_id | 0, // parse int
     offset = req.query.offset | 0,
     limit = req.query.limit | 10;
-    
-  var sql = "SELECT m.*, e.name FROM [dbo].[Messages] AS m"
-          + " INNER JOIN [dbo].[MessageProperties] AS p"
-            + " ON m.id = p.messageId"
-          + " INNER JOIN [dbo].[Rooms] AS r"
-            + " ON r.id = m.roomId"
-          + " INNER JOIN [dbo].[AnalyticsGroupRooms] AS agr"
-            + " ON r.id = agr.roomId"
-          + " INNER JOIN [dbo].[ExternalUsers] AS e"
-            + " ON p.externalUserId = e.id"
-          + " WHERE agr.analyticsGroupId = ?"
-          + " ORDER BY m.pubDate DESC"
-          + " OFFSET(?) ROWS FETCH NEXT (?) ROWS ONLY";
+
+  var sql = 'SELECT m.*, e.name FROM [dbo].[Messages] AS m' + ' INNER JOIN [dbo].[MessageProperties] AS p' + ' ON m.id = p.messageId' + ' INNER JOIN [dbo].[Rooms] AS r' + ' ON r.id = m.roomId' + ' INNER JOIN [dbo].[AnalyticsGroupRooms] AS agr' + ' ON r.id = agr.roomId' + ' INNER JOIN [dbo].[ExternalUsers] AS e' + ' ON p.externalUserId = e.id' + ' WHERE agr.analyticsGroupId = ?' + ' ORDER BY m.pubDate DESC' + ' OFFSET(?) ROWS FETCH NEXT (?) ROWS ONLY';
 
   if (analyticsGroupId === 0) {
     return res.status(400).json({
       ok: false
     });
   }
-  models.sequelize.query(sql,{
-    replacements: [analyticsGroupId, offset, limit], 
+  models.sequelize.query(sql, {
+    replacements: [analyticsGroupId, offset, limit],
     type: models.sequelize.QueryTypes.SELECT
-  }).then(function(messages){
+  }).then(function(messages) {
     res.json({
       ok: true,
       messages: messages
@@ -95,7 +84,7 @@ router.get('/search', auth, function(req, res, next) {
   where.push('m.id = ?');
   param.push(userId);
 
-  if(qRoomId) {
+  if (qRoomId) {
     where.push('p.id = ?');
     param.push(qRoomId);
   }
@@ -112,7 +101,7 @@ router.get('/search', auth, function(req, res, next) {
     param.push(qMessage);
   }
 
-  var  isExternalQuery = false;
+  var isExternalQuery = false;
   if (qUserId) {
     where.push('rm.externalUserId = ?');
     param.push(qUserId);
@@ -124,12 +113,12 @@ router.get('/search', auth, function(req, res, next) {
   }
   sql += ' WHERE ' + where.join(' AND ');
 
-  sql += ' UNION SELECT r.id AS messageId,r.roomId,r.message,r.pubDate,rp.externalId,rp.externalType,rp.name FROM dbo.Users AS m '+
-  'INNER JOIN dbo.Readables AS rd ON rd.userId = m.id '+
-  'INNER JOIN dbo.Rooms AS p  ON p.id = rd.roomId ' +
-  'INNER JOIN dbo.Messages AS r ON p.id = r.roomId ' +
-  'INNER JOIN dbo.MessageProperties AS rm ON r.id = rm.messageId '+
-  'INNER JOIN dbo.ExternalUsers AS rp ON rm.externalUserId = rp.id';
+  sql += ' UNION SELECT r.id AS messageId,r.roomId,r.message,r.pubDate,rp.externalId,rp.externalType,rp.name FROM dbo.Users AS m ' +
+    'INNER JOIN dbo.Readables AS rd ON rd.userId = m.id ' +
+    'INNER JOIN dbo.Rooms AS p  ON p.id = rd.roomId ' +
+    'INNER JOIN dbo.Messages AS r ON p.id = r.roomId ' +
+    'INNER JOIN dbo.MessageProperties AS rm ON r.id = rm.messageId ' +
+    'INNER JOIN dbo.ExternalUsers AS rp ON rm.externalUserId = rp.id';
   sql += ' WHERE ' + where.join(' AND ');
   param = param.concat(param);
 
