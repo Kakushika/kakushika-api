@@ -1,8 +1,8 @@
 host:
-  'http://kksk.io'
+  'https://kksk.io'
 
 api:
-  host: 'http://api.kksk.io'
+  host: 'https://api.kksk.io'
 
 db:
   host: 'kksk.database.windows.net'
