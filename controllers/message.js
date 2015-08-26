@@ -97,8 +97,8 @@ router.get('/search', auth, function(req, res, next) {
   }
 
   if (qMessage) {
-    where.push('r.message LIKE \'%?%\'');
-    param.push(qMessage);
+    where.push('r.message LIKE ?');
+    param.push('%' + qMessage + '%');
   }
 
   var isExternalQuery = false;
