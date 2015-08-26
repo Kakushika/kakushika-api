@@ -25,7 +25,7 @@ login:
     cost: 10
 
 cors:
-  host: 'http://kksk.io'
+  host: 'https://kksk.io'
 
 slack:
   api_url: 'https://slack.com/api'
