@@ -47,6 +47,7 @@
   },
   "devDependencies": {
     "chai": "^3.2.0",
+    "gulp": "^3.9.0",
     "supertest": "^1.0.1"
   }
 }
