@@ -5,7 +5,7 @@ var express = require('express'),
   auth = require('../middleware/auth'),
   models = require('../models');
 
-router.get('/', auth, function(req, res, next) {
+router.get('/list', auth, function(req, res, next) {
   var userId = req.decoded.id;
 
   models.AnalyticsGroup.findAll({
@@ -26,9 +26,9 @@ router.get('/', auth, function(req, res, next) {
   });
 });
 
-router.get('/:analyticsGroupId', auth, function(req, res, next) {
+router.get('/:analytics_group_id', auth, function(req, res, next) {
   var userId = req.decoded.id,
-    analyticsGroupId = req.params.analyticsGroupId;
+    analyticsGroupId = req.params.analytics_group_id;
 
   models.AnalyticsGroup.findById(analyticsGroupId, {
     include: [{
@@ -66,28 +66,43 @@ router.get('/:analyticsGroupId', auth, function(req, res, next) {
   });
 });
 
-router.get('/:analyticsGroupId/external-user', auth, function(req, res, next) {
-  var userId = req.decoded.id,
-    analyticsGroupId = req.params.analyticsGroupId;
-  var sql = " SELECT DISTINCT e.*, u.name as userName FROM[dbo].[Messages] AS m"
-          + " INNER JOIN [dbo].[MessageProperties] AS p"
-          + " 	ON m.id = p.messageId"
-          + " INNER JOIN [dbo].[Rooms] AS r"
-          + " 	ON r.id = m.roomId"
-          + " INNER JOIN [dbo].[AnalyticsGroupRooms] AS agr"
-          + " 	ON r.id = agr.roomId"
-          + " INNER JOIN [dbo].[ExternalUsers] AS e"
-          + " 	ON p.externalUserId = e.id"
-          + " LEFT OUTER JOIN [dbo].[Users] AS u"
-          + "   ON e.userId = u.id"
-          + " WHERE agr.analyticsGroupId = ?";
-  models.sequelize.query(sql, { 
-    replacements: [analyticsGroupId], 
-    type: models.sequelize.QueryTypes.SELECT }
-  ).then(function(externalUsers) {
+router.get('/:analytics_group_id/external_users', auth, function(req, res, next) {
+  // var userId = req.decoded.id,
+  var analyticsGroupId = req.params.analytics_group_id;
+  var sql = ' SELECT DISTINCT e.*, u.name as userName FROM[dbo].[Messages] AS m' + ' INNER JOIN [dbo].[MessageProperties] AS p' + ' ON m.id = p.messageId' + ' INNER JOIN [dbo].[Rooms] AS r' + ' ON r.id = m.roomId' + ' INNER JOIN [dbo].[AnalyticsGroupRooms] AS agr' + ' 	ON r.id = agr.roomId' + ' INNER JOIN [dbo].[ExternalUsers] AS e' + ' ON p.externalUserId = e.id' + ' LEFT OUTER JOIN [dbo].[Users] AS u' + ' ON e.userId = u.id' + ' WHERE agr.analyticsGroupId = ?';
+  models.sequelize.query(sql, {
+    replacements: [analyticsGroupId],
+    type: models.sequelize.QueryTypes.SELECT
+  }).then(function(externalUsers) {
     return res.json({
       ok: true,
       externalUser: externalUsers
+    });
+  }).catch(function(err) {
+    return next(err);
+  });
+});
+
+router.get('/:analytics_group_id/messages', auth, function(req, res, next) {
+  // var userId = req.decoded.id;
+  var analyticsGroupId = req.params.analytics_group_id | 0, // parse int
+    offset = req.query.offset | 0,
+    limit = req.query.limit | 10;
+
+  var sql = 'SELECT m.*, e.name FROM [dbo].[Messages] AS m' + ' INNER JOIN [dbo].[MessageProperties] AS p' + ' ON m.id = p.messageId' + ' INNER JOIN [dbo].[Rooms] AS r' + ' ON r.id = m.roomId' + ' INNER JOIN [dbo].[AnalyticsGroupRooms] AS agr' + ' ON r.id = agr.roomId' + ' INNER JOIN [dbo].[ExternalUsers] AS e' + ' ON p.externalUserId = e.id' + ' WHERE agr.analyticsGroupId = ?' + ' ORDER BY m.pubDate DESC' + ' OFFSET(?) ROWS FETCH NEXT (?) ROWS ONLY';
+
+  if (analyticsGroupId === 0) {
+    return res.status(400).json({
+      ok: false
+    });
+  }
+  models.sequelize.query(sql, {
+    replacements: [analyticsGroupId, offset, limit],
+    type: models.sequelize.QueryTypes.SELECT
+  }).then(function(messages) {
+    res.json({
+      ok: true,
+      messages: messages
     });
   }).catch(function(err) {
     return next(err);
@@ -140,7 +155,7 @@ router.put('/:analytics_group_id/rooms', auth, function(req, res, next) {
         analyticsGroupId: analyticsGroupId,
         roomId: roomId
       }).then(function(analyticsGroupRoom) {
-        models.Room.findById(analyticsGroupRoom.roomId).then(function(room){
+        models.Room.findById(analyticsGroupRoom.roomId).then(function(room) {
           analyticsGroupRoom.dataValues.room = room.dataValues;
           return res.json({
             ok: true,
@@ -189,7 +204,7 @@ router.put('/:analytics_group_id/groups', auth, function(req, res, next) {
         parentAnalyticsGroupId: analyticsGroupId,
         childAnalyticsGroupId: groupId
       }).then(function(analyticsGroupMesh) {
-        models.AnalyticsGroup.findById(analyticsGroupMesh.childAnalyticsGroupId).then(function(analyticsGroup){
+        models.AnalyticsGroup.findById(analyticsGroupMesh.childAnalyticsGroupId).then(function(analyticsGroup) {
           analyticsGroupMesh.dataValues.child = analyticsGroup.dataValues;
           return res.json({
             ok: true,
@@ -226,29 +241,29 @@ router.put('/:analytics_group_id/users', auth, function(req, res, next) {
       });
     }
     models.User.findOne({
-      where:{
+      where: {
         email: email
       }
     }).then(function(user) {
-        if (!user) {
-          return res.status(404).json({
-            ok: false
-          });
-        }
-        models.AnalyticsUser.create({
-          userId: addUserId,
-          analyticsGroupId: analyticsGroupId
-        }).then(function(analyticsUser) {
-          return res.json({
-            ok: true,
-            analyticsUser: analyticsUser
-          });
-        }).catch(function(err) {
-          return next(err);
+      if (!user) {
+        return res.status(404).json({
+          ok: false
+        });
+      }
+      models.AnalyticsUser.create({
+        userId: addUserId,
+        analyticsGroupId: analyticsGroupId
+      }).then(function(analyticsUser) {
+        return res.json({
+          ok: true,
+          analyticsUser: analyticsUser
         });
       }).catch(function(err) {
         return next(err);
       });
+    }).catch(function(err) {
+      return next(err);
+    });
   }).catch(function(err) {
     return next(err);
   });

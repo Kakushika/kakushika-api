@@ -6,64 +6,7 @@ var express = require('express'),
   models = require('../models'),
   date = require('../utils/date');
 
-router.get('/room/:room_id', auth, function(req, res, next) {
-  var userId = req.decoded.id,
-    roomId = req.params.room_id | 0, // parse int
-    offset = req.query.offset | 0,
-    limit = req.query.limit | 10;
-
-  if (roomId === 0) {
-    return res.status(400).json({
-      ok: false
-    });
-  }
-
-  if (100 < limit) {
-    limit = 100;
-  }
-
-  var query = 'SELECT * FROM dbo.Messages AS m INNER JOIN dbo.MessageProperties AS p  ON m.id = p.messageId INNER JOIN dbo.Readables AS r ON m.roomId = r.roomId INNER JOIN dbo.Rooms AS rm ON m.roomId = rm.id WHERE m.roomId = ? AND(r.userId = ? OR rm.userId = ?) ORDER BY m.pubDate DESC OFFSET(?) ROWS FETCH NEXT(?) ROWS ONLY ';
-
-  models.sequelize.query(query, {
-    replacements: [roomId, userId, userId, offset, limit],
-    type: models.sequelize.QueryTypes.SELECT,
-  }).then(function(messages) {
-    return res.json({
-      ok: true,
-      messages: messages
-    });
-  }).catch(function(err) {
-    return next(err);
-  });
-});
-
-router.get('/analytics-group-id/:analytics_group_id', auth, function(req, res, next) {
-  // var userId = req.decoded.id;
-  var analyticsGroupId = req.params.analytics_group_id | 0, // parse int
-    offset = req.query.offset | 0,
-    limit = req.query.limit | 10;
-
-  var sql = 'SELECT m.*, e.name FROM [dbo].[Messages] AS m' + ' INNER JOIN [dbo].[MessageProperties] AS p' + ' ON m.id = p.messageId' + ' INNER JOIN [dbo].[Rooms] AS r' + ' ON r.id = m.roomId' + ' INNER JOIN [dbo].[AnalyticsGroupRooms] AS agr' + ' ON r.id = agr.roomId' + ' INNER JOIN [dbo].[ExternalUsers] AS e' + ' ON p.externalUserId = e.id' + ' WHERE agr.analyticsGroupId = ?' + ' ORDER BY m.pubDate DESC' + ' OFFSET(?) ROWS FETCH NEXT (?) ROWS ONLY';
-
-  if (analyticsGroupId === 0) {
-    return res.status(400).json({
-      ok: false
-    });
-  }
-  models.sequelize.query(sql, {
-    replacements: [analyticsGroupId, offset, limit],
-    type: models.sequelize.QueryTypes.SELECT
-  }).then(function(messages) {
-    res.json({
-      ok: true,
-      messages: messages
-    });
-  }).catch(function(err) {
-    return next(err);
-  });
-});
-
-router.get('/search', auth, function(req, res, next) {
+router.get('/messages', auth, function(req, res, next) {
   var userId = req.decoded.id,
     qRoomId = req.query.room_id | 0, // room parse int
     qPubDate = req.query.pub_date, // assume Date, timezone
@@ -142,7 +85,9 @@ router.get('/search', auth, function(req, res, next) {
   });
 });
 
-router.get('/search/analytics-group-id/:analytics_group_id', auth, function(req, res, next) {
+// temporary
+// in the feature, merge into /messages
+router.get('/analytics_group/:analytics_group_id', auth, function(req, res, next) {
   var userId = req.decoded.id,
     analyticsGroupId = req.params.analytics_group_id,
     qRoomId = req.query.room_id | 0, // room parse int

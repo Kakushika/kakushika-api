@@ -5,7 +5,7 @@ var express = require('express'),
   auth = require('../middleware/auth'),
   models = require('../models');
 
-router.get('/', auth, function(req, res, next) {
+router.get('/list', auth, function(req, res, next) {
   var userId = req.decoded.id;
 
   models.RoomGroup.findAll({
