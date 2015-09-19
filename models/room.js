@@ -1,7 +1,7 @@
 ﻿"use strict";
 
 var edge = require('edge')
-  , promise = require('promise')
+  , Promise = require('promise')
   , group = require('./room_group.js');
 
 var create = edge.func('sql-o', function () {
