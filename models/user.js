@@ -1,79 +1,101 @@
-'use strict';
+﻿"use strict";
 
-var bcrypt = require('bcrypt-nodejs'),
-  config = require('config');
+var edge = require('edge')
+  , promise = require('promise')
+  , claim = require('./claim.js');
 
-module.exports = function(sequelize, DataTypes) {
-  var User = sequelize.define('User', {
-    id: {
-      type: DataTypes.INTEGER,
-      primaryKey: true,
-      autoIncrement: true
-    },
-    email: {
-      type: DataTypes.STRING,
-      unique: true
-    },
-    passwordHash: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      set: function(val) {
-        var salt = bcrypt.genSaltSync(config.login.password.cost);
-        var hash = bcrypt.hashSync(val, salt);
-        this.setDataValue('passwordHash', hash);
-      }
-    },
-    name: {
-      type: DataTypes.STRING,
-      allowNull: false
+var create = edge.func('sql-o', function () {
+    /*
+        INSERT INTO Users([email], [name], [passwordHash])
+        OUTPUT INSERTED.*
+        VALUES(@email, @name, @hash)
+    */ 
+});
+var single = edge.func('sql-o', function () {
+    /*
+        SELECT TOP(1) [id], [email], [name], [registered] FROM Users
+        WHERE [id] = @id
+    */ 
+});
+var singleByEmail = edge.func('sql-o', function () {
+    /*
+        SELECT TOP(1) [id], [email], [name], [registered] FROM Users
+        WHERE [email] = @email
+    */ 
+});
+var isRegistered = edge.func('sql-o', function () {
+    /*
+        SELECT TOP(1) [id] FROM Users
+        WHERE [email] = @email AND [passwordHash] = @hash AND [registered] = 1
+    */ 
+});
+var register = edge.func('sql-o', function () {
+    /*
+        UPDATE Users 
+        SET [registered] = 1
+        WHERE [id] = @id
+    */ 
+});
+
+function createCallback(resolve, reject) {
+    return function callback(err, result) {
+        if (err)
+            reject(err);
+        else
+            resolve(result);
     }
-  }, {
-    classMethods: {
-      associate: function(models) {
-        User.belongsToMany(models.Room, {
-          through: models.Readable,
-          as: 'ReadableRooms',
-          foreignKey: 'userId'
-        });
-        User.hasMany(models.Claim, {
-          as: 'Claims',
-          foreignKey: 'userId'
-        });
-        User.hasMany(models.ExternalUser, {
-          as: 'ExternalUsers',
-          foreignKey: 'userId'
-        });
-        User.hasMany(models.AnalyticsGroup, {
-          as: 'AnalyticsGroup',
-          foreignKey: 'userId'
-        });
-        User.hasMany(models.Room, {
-          as: 'Rooms',
-          foreignKey: 'userId'
-        });
-        User.belongsToMany(models.AnalyticsGroup, {
-          through: models.AnalyticsUser,
-          as: 'AnalyticsGroups',
-          foreignKey: 'userId'
-        });
-      }
-    },
-    instanceMethods: {
-      setPassword: function(password, done) {
-        return bcrypt.genSalt(config.login.password.cost, function(err, salt) {
-          return bcrypt.hash(password, salt, function(error, hash) {
-            this.passwordHash = hash;
-            return done();
-          });
-        });
-      },
-      verifyPassword: function(password, done) {
-        bcrypt.compare(password, this.passwordHash, function(err, res) {
-          return done(err, res);
-        });
-      }
+}
+function createSingleCallback(resolve, reject){
+    return function callback(err, result) {
+        if (err)
+            reject(err);
+        else
+            resolve(result[0]);
     }
-  });
+}
 
-  return User;
-};
+var user = {
+    create: function (email, name, hash) {
+        return new Promise(function (resolve, reject) {
+            create({
+                email: email,
+                name: name,
+                hash: hash
+            }, createSingleCallback(resolve, reject))
+        }).then(function (user) {
+            return new Promise(function (resolve, reject) { 
+                claim.createRegisterToken(user).then(function (claim) {
+                    resolve({
+                        user: user,
+                        registerToken: claim.value
+                    });
+                }, reject);
+            });
+        });
+    },
+    single: function (id){
+        return new Promise(function (resolve, reject) {
+            single({ id: id }, createSingleCallback(resolve, reject));
+        });
+    },
+    singleByEmail: function (id) {
+        return new Promise(function (resolve, reject) {
+            singleByEmail({ email: email }, createSingleCallback(resolve, reject));
+        });
+    },
+    register: function (id) {
+        return new Promise(function (resolve, reject) {
+            register(createCallback(resolve, reject));
+        });
+    },
+    isRegistered: function (email, hash){
+        return new Promise(function (resolve, reject) {
+            isRegistered({
+                email: email,
+                hash: hash
+            }, createSingleCallback(resolve, reject));
+        });
+    }
+}
+
+module.exports = user;

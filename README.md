@@ -2,3 +2,10 @@
 
 # Kakushika-api
 Kakushika API
+
+sequlizeが結構微妙だったので、[edge-js](https://github.com/tjanczuk/edge)を導入。ORMじゃないけど。
+
+DBにつなぐには環境変数に接続文字列をセットする
+```
+EDGE_SQL_CONNECTION_STRING=Server=tcp:iwate.database.windows.net,1433;Database=iwate;User ID=iwate@iwate;Password={password};Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;
+```
