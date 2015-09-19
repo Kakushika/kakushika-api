@@ -4,7 +4,7 @@ var user = require('./user.js')
   , claim = require('./claim.js')
   , group = require('./room_group.js')
   , room = require('./room.js')
-  , message = require('../message.js')
+  , message = require('./message.js')
   , folder = require('./folder.js');
 
 var models = {
