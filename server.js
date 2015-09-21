@@ -9,7 +9,6 @@
  */
 var app = require('./app'),
   http = require('http'),
-  models = require('./models'),
   utils = require('./utils');
 
 /**
@@ -34,9 +33,6 @@ var server = http.createServer(app);
 /**
  * Listen on provided port, on all network interfaces.
  */
-models.sequelize.sync().then(function() {
-  server.listen(port);
-});
 server.on('error', onError);
 server.on('listening', onListening);
 

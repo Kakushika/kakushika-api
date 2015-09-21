@@ -6,13 +6,11 @@ var express = require('express'),
   app = express(),
   fs = require('fs'),
   logger = require('morgan'),
-  cookieParser = require('cookie-parser'),
   bodyParser = require('body-parser'),
   compression = require('compression'),
   helmet = require('helmet'),
   cors = require('cors'),
-  config = require('config'),
-  models = require('./models');
+  config = require('config');
 
 // Use helmet to secure Express headers
 app.use(helmet());
