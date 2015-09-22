@@ -14,8 +14,8 @@ router.get('/', function(req, res) {
 router.post('/signup', controllers.authentication.signup);
 router.post('/login', controllers.authentication.login);
 
-router.get('/users', authorization, controllers.user.read);
-router.get('/me', authorization, controllers.user.me);
+router.get('/users', authorization, controllers.users.read);
+router.get('/me', authorization, controllers.users.me);
 
 router.get('/auth/slack', authorization, controllers.auth.slack.oauth);
 router.post('/auth/slack', authorization, controllers.auth.slack.callback);
