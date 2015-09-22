@@ -1,7 +1,9 @@
 ﻿
 'use strict';
 
-var edge = require('edge'),
+var bcrypt = require('bcrypt-nodejs'),
+  config = require('config'),
+  edge = require('edge'),
   claim = require('./claim.js');
 
 var create = edge.func('sql-o', function() {
@@ -57,14 +59,25 @@ function createSingleCallback(resolve, reject) {
   };
 }
 
+function getHashPassword(password, callback) {
+  bcrypt.genSalt(config.login.password.cost, function(err, salt) {
+    bcrypt.hash(password, salt, callback);
+  });
+}
+
 var user = {
-  create: function(email, name, hash) {
+  create: function(email, name, password) {
     return new Promise(function(resolve, reject) {
-      create({
-        email: email,
-        name: name,
-        hash: hash
-      }, createSingleCallback(resolve, reject));
+      getHashPassword(password, function(err, hash) {
+        if (err) {
+          return reject(err);
+        }
+        create({
+          email: email,
+          name: name,
+          hash: hash
+        }, createSingleCallback(resolve, reject));
+      });
     }).then(function(user) {
       return new Promise(function(resolve, reject) {
         claim.createRegisterToken(user).then(function(claim) {
@@ -95,12 +108,17 @@ var user = {
       register(createCallback(resolve, reject));
     });
   },
-  isRegistered: function(email, hash) {
+  isRegistered: function(email, password) {
     return new Promise(function(resolve, reject) {
-      isRegistered({
-        email: email,
-        hash: hash
-      }, createSingleCallback(resolve, reject));
+      getHashPassword(password, function(err, hash) {
+        if (err) {
+          return reject(err);
+        }
+        isRegistered({
+          email: email,
+          hash: hash
+        }, createSingleCallback(resolve, reject));
+      });
     });
   }
 };
