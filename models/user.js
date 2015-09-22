@@ -105,7 +105,9 @@ var user = {
   },
   register: function(id) {
     return new Promise(function(resolve, reject) {
-      register(createCallback(resolve, reject));
+      register({
+        id: id
+      }, createCallback(resolve, reject));
     });
   },
   isRegistered: function(email, password) {
