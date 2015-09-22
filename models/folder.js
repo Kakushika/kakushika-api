@@ -38,7 +38,7 @@ function createSingleCallback(resolve, reject) {
     } else {
       resolve(result[0]);
     }
-  }
+  };
 }
 
 function resolveName(userId, parentId, folderName) {
@@ -91,9 +91,9 @@ var folder = {
     return resolvePath(userId, ['Home'].concat(path)).then(function(id) {
       return getInFolder({
         id: id
-      }, createSingleCallback)
-    })
+      }, createSingleCallback);
+    });
   }
-}
+};
 
 module.exports = folder;
