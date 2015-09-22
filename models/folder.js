@@ -1,6 +1,23 @@
-﻿'use strict';
+﻿
+'use strict';
 
 var edge = require('edge');
+
+var create = edge.func('sql-o', () => {
+  /*
+      INSERT INTO Folders([name], [ownerId])
+      OUTPUT INSERTED.*
+      VALUES(@name, @userId)
+  */
+});
+
+var createRelation = edge.func('sql-o', () => {
+  /*
+      INSERT INTO R_FoldersEdges([parentFolderId], [childFolderId])
+      OUTPUT INSERTED.id, INSERTED.name
+      VALUES(@parentFolderId, @childFolderId)
+  */
+});
 
 var getInFolder = edge.func('sql-o', function() {
   /*
@@ -86,8 +103,24 @@ function resolvePath(userId, path) {
   return promise;
 }
 var folder = {
+  create: function(parentFolderId, userId, name) {
+    return new Promise((resolve, reject) => {
+      create({
+        userId: userId,
+        name: name
+      }, createSingleCallback(resolve, reject));
+    }).then((folder) => {
+      return new Promise(function(resolve, reject) {
+        createRelation({
+          parentFolderId: parentFolderId,
+          childFolderId: folder.id
+        }).then(() => {
+          resolve(folder);
+        }, reject);
+      });
+    });
+  },
   getIn: function(userId, path) {
-
     return resolvePath(userId, ['Home'].concat(path)).then(function(id) {
       return getInFolder({
         id: id
