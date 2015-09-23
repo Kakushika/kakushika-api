@@ -38,6 +38,14 @@ var getReadablesInFolder = edge.func('sql-o', function() {
   */
 });
 
+var deleteRelation = edge.func('sql-o', () => {
+  /*
+      DELETE FROM R_FoldersEdges AS fe
+      OUTPUT DELETED.*
+      WHERE fe.parentFolderId = @parentFolderId AND fe.childFolderId = @childFolderId
+   */
+});
+
 function createCallback(resolve, reject) {
   return function callback(err, result) {
     if (err) {
@@ -119,6 +127,47 @@ var folder = {
         }, reject);
       });
     });
+  },
+  createRelations: function(userId, to, folderIds) {
+    return Promise.all(
+      folderIds.map((folderId) => {
+        createRelation({
+          childFolderId: folderId,
+          parentFolderId: to
+        }, (err, result) => {
+          if (err) {
+            Promise.reject(err);
+          } else {
+            Promise.resolve(result);
+          }
+        });
+      })
+    );
+  },
+  deleteRelations: function(userId, from, folderIds) {
+    return Promise.all(
+      folderIds.map((folderId) => {
+        deleteRelation({
+          parentFolderId: from,
+          childFolderId: folderId
+        }, (err, result) => {
+          if (err) {
+            Promise.reject(err);
+          } else {
+            Promise.resolve(result[0]);
+          }
+        });
+      })
+    );
+  },
+  moveRelations: function(userId, from, to, folderIds) {
+    return this.createRelations(userId, to, folderIds)
+      .then(() => {
+        return this.deleteRelations(userId, from, folderIds);
+      })
+      .then((result) => {
+        return Promise.resolve(result.length);
+      });
   },
   getIn: function(userId, path) {
     return resolvePath(userId, ['Home'].concat(path)).then(function(id) {
