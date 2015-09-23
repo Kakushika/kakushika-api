@@ -21,9 +21,10 @@ auth.slack = {
     });
   },
   callback: function(req, res) {
-    var userId = req.decoded.id;
+    var userId = req.decoded.id,
+      code = req.body.code;
 
-    if (!req.query.code) {
+    if (!code) {
       res.status(400).json({
         ok: false
       });
@@ -31,7 +32,7 @@ auth.slack = {
       Slack.oauth.access({
         client_id: config.slack.client_id,
         client_secret: config.slack.client_secret,
-        code: req.query.code
+        code: code
       }, function(error, data) {
         if (error || !data.ok) {
           res.status(400).json({
