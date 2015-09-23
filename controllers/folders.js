@@ -39,6 +39,14 @@ var folders = {
       }
       return res.status(201);
     }
+  },
+  readables: (req, res) => {
+    var userId = req.decoded.id,
+      folderId = req.params.folder_id,
+      targetUserId = req.body.userId;
+
+    models.folder.createReadable(userId, folderId, targetUserId);
+    return res.status(201);
   }
 };
 

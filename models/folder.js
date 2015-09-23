@@ -19,6 +19,14 @@ var createRelation = edge.func('sql-o', () => {
   */
 });
 
+var createReadable = edge.func('sql-o', () => {
+  /*
+      INSERT INTO R_FolderReadableUsers(userId, folderId)
+      OUTPUT INSERTED.*
+      VALUES(@userId, @folderId)
+   */
+});
+
 var getInFolder = edge.func('sql-o', function() {
   /*
       SELECT f.* FROM Folders AS f
@@ -168,6 +176,14 @@ var folder = {
       .then((result) => {
         return Promise.resolve(result.length);
       });
+  },
+  createReadable: (userId, folderId, targetUserId) => {
+    return new Promise((resolve, reject) => {
+      createReadable({
+        userId: targetUserId,
+        folderId: folderId
+      }, createSingleCallback(resolve, reject));
+    });
   },
   getIn: function(userId, path) {
     return resolvePath(userId, ['Home'].concat(path)).then(function(id) {
