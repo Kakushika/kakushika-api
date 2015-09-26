@@ -54,15 +54,15 @@ var deleteRelation = edge.func('sql-o', () => {
    */
 });
 
-function createCallback(resolve, reject) {
-  return function callback(err, result) {
-    if (err) {
-      reject(err);
-    } else {
-      resolve(result);
-    }
-  };
-}
+// function createCallback(resolve, reject) {
+//   return function callback(err, result) {
+//     if (err) {
+//       reject(err);
+//     } else {
+//       resolve(result);
+//     }
+//   };
+// }
 
 function createSingleCallback(resolve, reject) {
   return function callback(err, result) {
@@ -112,7 +112,7 @@ function resolvePath(userId, path) {
   var name = path.shift();
   var promise = resolveName(userId, null, name);
   while (!!(name = path.shift())) {
-    promise.then(function(id) {
+    promise.then((id) => {
       return resolveName(userId, id, name);
     });
   }
