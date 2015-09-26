@@ -1,7 +1,6 @@
 'use strict';
 
-var config = require('config'),
-  models = require('../models');
+var models = require('../models');
 
 var folders = {
   create: function(req, res, next) {
