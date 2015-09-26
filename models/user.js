@@ -13,24 +13,28 @@ var create = edge.func('sql-o', function() {
       VALUES(@email, @name, @hash)
   */
 });
+
 var single = edge.func('sql-o', function() {
   /*
-      SELECT TOP(1) [id], [email], [name], [registered] FROM Users
+      SELECT TOP(1) [email], [name], [registered], [home] FROM Users
       WHERE [id] = @id
   */
 });
+
 var singleByEmail = edge.func('sql-o', function() {
   /*
       SELECT TOP(1) [id], [email], [name], [registered] FROM Users
       WHERE [email] = @email
   */
 });
+
 var isRegistered = edge.func('sql-o', function() {
   /*
       SELECT TOP(1) [id] FROM Users
       WHERE [email] = @email AND [passwordHash] = @hash AND [registered] = 1
   */
 });
+
 var register = edge.func('sql-o', function() {
   /*
       UPDATE Users

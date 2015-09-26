@@ -14,8 +14,8 @@ let user = {
         });
       }
       return res.json({
-        ok: true,
-        user: user
+        name: user.name,
+        home: user.home
       });
     }).catch(function(err) {
       return next(err);
