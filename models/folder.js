@@ -34,6 +34,14 @@ var getInFolder = edge.func('sql-o', function() {
   */
 });
 
+var getReadablesUserInFolder = edge.func('sql-o', () => {
+  /*
+      SELECT u.id AS id, u.name AS name FROM R_FolderReadableUsers AS fru
+      INNER JOIN Users AS u ON u.id = fru.userId
+      WHERE fru.folderId = @folderId
+   */
+});
+
 var getReadablesInFolder = edge.func('sql-o', function() {
   /*
       SELECT f.[id] FROM Folders AS f
@@ -190,6 +198,20 @@ var folder = {
       return getInFolder({
         id: id
       }, createSingleCallback);
+    });
+  },
+  getInFolder: (userId, folderId) => {
+    return new Promise((resolve, reject) => {
+      getInFolder({
+        folderId: folderId
+      }, createSingleCallback(resolve, reject));
+    });
+  },
+  getReadablesUserInFolder: (userId, folderId) => {
+    return new Promise((resolve, reject) => {
+      getReadablesUserInFolder({
+        folderId: folderId
+      }, createSingleCallback(resolve, reject));
     });
   }
 };

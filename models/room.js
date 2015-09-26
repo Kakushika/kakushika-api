@@ -117,26 +117,11 @@ var room = {
         return Promise.resolve(result.length);
       });
   },
-  getInFolder: function(folderId) {
+  getInFolder: function(userId, folderId) {
     return new Promise(function(resolve, reject) {
       getInFolder({
         folderId: folderId
       }, createCallback(resolve, reject));
-    }).then(function(rooms) {
-      let ids = [];
-      for (let i = 0; i < rooms.length; i++) {
-        if (rooms[i].roomGroupId) {
-          ids.push(rooms[i].roomGroupId);
-        }
-      }
-      return new Promise(function(resolve, reject) {
-        group.getIn(ids).then(function(groups) {
-          resolve({
-            roomGroups: groups,
-            rooms: rooms
-          });
-        }, reject);
-      });
     });
   }
 };

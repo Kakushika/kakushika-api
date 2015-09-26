@@ -21,23 +21,41 @@ var folders = {
       from = req.body.from,
       to = req.params.folder_id;
 
-    if(Number.isFinite(from)) {
-      if(Array.isArray(folders)) {
+    if (Number.isFinite(from)) {
+      if (Array.isArray(folders)) {
         models.folder.moveRelations(userId, from, to, folders);
       }
-      if(Array.isArray(rooms)) {
+      if (Array.isArray(rooms)) {
         models.room.moveRelations(userId, from, to, rooms);
       }
       return res.status(201);
     } else {
-      if(Array.isArray(folders)) {
+      if (Array.isArray(folders)) {
         models.folder.createRelations(userId, to, folders);
       }
-      if(Array.isArray(rooms)) {
+      if (Array.isArray(rooms)) {
         models.room.createRelations(userId, to, rooms);
       }
       return res.status(201);
     }
+  },
+  read: (req, res, next) => {
+    var userId = req.decoded.id,
+      folderId = req.params.folder_id;
+
+    Promise.all([models.folder.getInFolder(userId, folderId), models.room.getInFolder(userId, folderId), models.folder.getReadablesUserInFolder(userId, folderId)])
+      .then((result) => {
+        res.json({
+          children: {
+            folders: result[0],
+            rooms: result[1]
+          },
+          readers: result[2]
+        });
+      })
+      .catch((err) => {
+        return next(err);
+      });
   },
   reader: (req, res) => {
     var userId = req.decoded.id,
