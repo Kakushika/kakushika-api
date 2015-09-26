@@ -5,9 +5,9 @@ let config = require('config'),
   Slack = require('slack-api'),
   models = require('../models');
 
-let auth = {};
+let connect = {};
 
-auth.slack = {
+connect.slack = {
   oauth: function(req, res) {
     Slack.oauth.getUrl({
       client_id: config.slack.client_id,
@@ -82,4 +82,4 @@ auth.slack = {
   }
 };
 
-module.exports = auth;
+module.exports = connect;

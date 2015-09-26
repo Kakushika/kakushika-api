@@ -17,8 +17,8 @@ router.post('/login', controllers.authentication.login);
 router.get('/users', authorization, controllers.users.read);
 router.get('/me', authorization, controllers.users.me);
 
-router.get('/auth/slack', authorization, controllers.auth.slack.oauth);
-router.post('/auth/slack', authorization, controllers.auth.slack.callback);
+router.get('/connect/slack', authorization, controllers.connect.slack.oauth);
+router.post('/connect/slack', authorization, controllers.connect.slack.callback);
 
 router.post('/folders', authorization, controllers.folders.create);
 router.get('/folders/:folder_id', authorization, controllers.folders.read);
