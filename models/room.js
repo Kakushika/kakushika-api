@@ -1,4 +1,3 @@
-﻿
 'use strict';
 
 var edge = require('edge'),

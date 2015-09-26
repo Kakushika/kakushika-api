@@ -1,4 +1,3 @@
-﻿
 'use strict';
 
 var edge = require('edge');
@@ -118,6 +117,7 @@ function resolvePath(userId, path) {
   }
   return promise;
 }
+
 var folder = {
   create: function(parentFolderId, userId, name) {
     return new Promise((resolve, reject) => {
