@@ -39,7 +39,7 @@ var folders = {
       return res.status(201);
     }
   },
-  readables: (req, res) => {
+  reader: (req, res) => {
     var userId = req.decoded.id,
       folderId = req.params.folder_id,
       targetUserId = req.body.userId;

@@ -23,10 +23,9 @@ router.post('/connect/slack', authorization, controllers.connect.slack.callback)
 router.post('/folders', authorization, controllers.folders.create);
 router.get('/folders/:folder_id', authorization, controllers.folders.read);
 router.post('/folders/:folder_id/children', authorization, controllers.folders.createChildren);
-router.post('/folders/:folder_id/readables', authorization, controllers.folders.readables);
+router.post('/folders/:folder_id/reader', authorization, controllers.folders.reader);
 router.get('/resolve', authorization, controllers.folders.resolve);
-
-router.post('/rooms/:room_id/readables', authorization, controllers.rooms.readables);
+router.post('/rooms/:room_id/reader', authorization, controllers.rooms.reader);
 
 router.get('/messages', authorization, controllers.messages.search);
 
