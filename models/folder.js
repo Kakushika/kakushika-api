@@ -26,7 +26,7 @@ var createReadable = edge.func('sql-o', () => {
    */
 });
 
-var getInFolder = edge.func('sql-o', function() {
+var getInFolder = edge.func('sql-o', () => {
   /*
       SELECT f.* FROM Folders AS f
       INNER JOIN R_FoldersEdge AS fse ON fse.[childFolderId] = f.[id]
@@ -42,7 +42,7 @@ var getReadablesUserInFolder = edge.func('sql-o', () => {
    */
 });
 
-var getReadablesInFolder = edge.func('sql-o', function() {
+var getReadablesInFolder = edge.func('sql-o', () => {
   /*
       SELECT f.[id] FROM Folders AS f
       INNER JOIN R_FoldersEdge AS fse ON fse.[childFolderId] = f.[id]
@@ -89,12 +89,12 @@ function resolveName(userId, parentId, folderName) {
     name = m[1];
     id = m[2];
   }
-  return new Promise(function(resolve, reject) {
+  return new Promise((resolve, reject) => {
     getReadablesInFolder({
       userId: userId,
       parentId: parentId,
       name: name
-    }, function(err, result) {
+    }, (err, result) => {
       if (!err) {
         if (id) {
           var index = result.indexOf(id);
@@ -127,14 +127,14 @@ function resolvePath(userId, path) {
 }
 
 var folder = {
-  create: function(parentFolderId, userId, name) {
+  create: (parentFolderId, userId, name) => {
     return new Promise((resolve, reject) => {
       create({
         userId: userId,
         name: name
       }, createSingleCallback(resolve, reject));
     }).then((folder) => {
-      return new Promise(function(resolve, reject) {
+      return new Promise((resolve, reject) => {
         createRelation({
           parentFolderId: parentFolderId,
           childFolderId: folder.id
@@ -144,7 +144,7 @@ var folder = {
       });
     });
   },
-  createRelations: function(userId, to, folderIds) {
+  createRelations: (userId, to, folderIds) => {
     return Promise.all(
       folderIds.map((folderId) => {
         createRelation({
@@ -160,7 +160,7 @@ var folder = {
       })
     );
   },
-  deleteRelations: function(userId, from, folderIds) {
+  deleteRelations: (userId, from, folderIds) => {
     return Promise.all(
       folderIds.map((folderId) => {
         deleteRelation({
@@ -176,7 +176,7 @@ var folder = {
       })
     );
   },
-  moveRelations: function(userId, from, to, folderIds) {
+  moveRelations: (userId, from, to, folderIds) => {
     return this.createRelations(userId, to, folderIds)
       .then(() => {
         return this.deleteRelations(userId, from, folderIds);
@@ -193,12 +193,13 @@ var folder = {
       }, createSingleCallback(resolve, reject));
     });
   },
-  getIn: function(userId, path) {
-    return resolvePath(userId, ['Home'].concat(path)).then(function(id) {
-      return getInFolder({
-        id: id
-      }, createSingleCallback);
-    });
+  getIn: (userId, path) => {
+    return resolvePath(userId, ['Home'].concat(path))
+      .then((id) => {
+        return getInFolder({
+          id: id
+        }, createSingleCallback);
+      });
   },
   getInFolder: (userId, folderId) => {
     return new Promise((resolve, reject) => {

@@ -24,7 +24,7 @@ var getInRoom = edge.func('sql-o', function() {
   */
 });
 
-var getInRooms = edge.func('sql-o', function() {
+var getInRooms = edge.func('sql-o', () => {
   /*
       SELECT m.*, a.[id] AS assetId, a.[type], a.[title], a.[link] FROM Messages AS m
       INNER JOIN Assets AS a ON m.[id] = a.[id]
@@ -84,8 +84,8 @@ var message = {
       });
     });
   },
-  getInRooms: function(roomIds, offset, limit) {
-    return new Promise(function(resolve, reject) {
+  getInRooms: (roomIds, offset, limit) => {
+    return new Promise((resolve, reject) => {
       getInRooms({
         roomIds: roomIds,
         offset: offset || 0,
@@ -93,8 +93,8 @@ var message = {
       }, createCallback(resolve, reject));
     });
   },
-  getInRoom: function(roomId, offset, limit) {
-    return new Promise(function(resolve, reject) {
+  getInRoom: (roomId, offset, limit) => {
+    return new Promise((resolve, reject) => {
       getInRoom({
         roomId: roomId,
         offset: offset || 0,

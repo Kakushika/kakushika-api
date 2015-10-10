@@ -5,7 +5,7 @@ let controllers = require('./controllers'),
   express = require('express'),
   router = express.Router();
 
-router.get('/', function(req, res) {
+router.get('/', (req, res) => {
   res.json({
     ok: true
   });

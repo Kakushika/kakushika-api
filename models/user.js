@@ -1,4 +1,3 @@
-﻿
 'use strict';
 
 var bcrypt = require('bcrypt-nodejs'),
@@ -6,7 +5,7 @@ var bcrypt = require('bcrypt-nodejs'),
   edge = require('edge'),
   claim = require('./claim.js');
 
-var create = edge.func('sql-o', function() {
+var create = edge.func('sql-o', () => {
   /*
       INSERT INTO Users([email], [name], [passwordHash])
       OUTPUT INSERTED.*
@@ -14,28 +13,28 @@ var create = edge.func('sql-o', function() {
   */
 });
 
-var single = edge.func('sql-o', function() {
+var single = edge.func('sql-o', () => {
   /*
       SELECT TOP(1) [email], [name], [registered], [home] FROM Users
       WHERE [id] = @id
   */
 });
 
-var singleByEmail = edge.func('sql-o', function() {
+var singleByEmail = edge.func('sql-o', () => {
   /*
       SELECT TOP(1) [id], [email], [name], [registered] FROM Users
       WHERE [email] = @email
   */
 });
 
-var isRegistered = edge.func('sql-o', function() {
+var isRegistered = edge.func('sql-o', () => {
   /*
       SELECT TOP(1) [id] FROM Users
       WHERE [email] = @email AND [passwordHash] = @hash AND [registered] = 1
   */
 });
 
-var register = edge.func('sql-o', function() {
+var register = edge.func('sql-o', () => {
   /*
       UPDATE Users
       SET [registered] = 1
@@ -64,15 +63,15 @@ function createSingleCallback(resolve, reject) {
 }
 
 function getHashPassword(password, callback) {
-  bcrypt.genSalt(config.login.password.cost, function(err, salt) {
+  bcrypt.genSalt(config.login.password.cost, (err, salt) => {
     bcrypt.hash(password, salt, callback);
   });
 }
 
 var user = {
-  create: function(email, name, password) {
-    return new Promise(function(resolve, reject) {
-      getHashPassword(password, function(err, hash) {
+  create: (email, name, password) => {
+    return new Promise((resolve, reject) => {
+      getHashPassword(password, (err, hash) => {
         if (err) {
           return reject(err);
         }
@@ -82,41 +81,42 @@ var user = {
           hash: hash
         }, createSingleCallback(resolve, reject));
       });
-    }).then(function(user) {
-      return new Promise(function(resolve, reject) {
-        claim.createRegisterToken(user).then(function(claim) {
-          resolve({
-            user: user,
-            registerToken: claim.value
-          });
-        }, reject);
+    }).then((user) => {
+      return new Promise((resolve, reject) => {
+        claim.createRegisterToken(user)
+          .then((claim) => {
+            resolve({
+              user: user,
+              registerToken: claim.value
+            });
+          }, reject);
       });
     });
   },
-  single: function(id) {
-    return new Promise(function(resolve, reject) {
+  single: (id) => {
+    return new Promise((resolve, reject) => {
       single({
         id: id
       }, createSingleCallback(resolve, reject));
     });
   },
-  singleByEmail: function(email) {
-    return new Promise(function(resolve, reject) {
+  singleByEmail: (email) => {
+    return new Promise((resolve, reject) => {
       singleByEmail({
         email: email
       }, createSingleCallback(resolve, reject));
     });
   },
-  register: function(id) {
-    return new Promise(function(resolve, reject) {
+  register: (id) => {
+    return new Promise((resolve, reject) => {
       register({
         id: id
       }, createCallback(resolve, reject));
     });
   },
-  isRegistered: function(email, password) {
-    return new Promise(function(resolve, reject) {
-      getHashPassword(password, function(err, hash) {
+  isRegistered: (email, password) => {
+    return new Promise((resolve, reject) => {
+      getHashPassword(password, (err, hash) => {
         if (err) {
           return reject(err);
         }

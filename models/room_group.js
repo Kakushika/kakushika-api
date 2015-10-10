@@ -1,9 +1,8 @@
-﻿
 'use strict';
 
 var edge = require('edge');
 
-var create = edge.func('sql-o', function() {
+var create = edge.func('sql-o', () => {
   /*
       INSERT INTO RoomGroups([userId], [externalId], [externalType], [name])
       OUTPUT INSERTED.*
@@ -11,7 +10,7 @@ var create = edge.func('sql-o', function() {
   */
 });
 
-var getInIds = edge.func('sql-o', function() {
+var getInIds = edge.func('sql-o', () => {
   /*
       SELECT * FROM Rooms
       WHERE [id] IN ({ids});
@@ -39,8 +38,8 @@ function createSingleCallback(reject, resolve) {
 }
 
 var group = {
-  create: function(userId, externalId, externalType, name) {
-    return new Promise(function(resolve, reject) {
+  create: (userId, externalId, externalType, name) => {
+    return new Promise((resolve, reject) => {
       create({
         userId: userId,
         externalId: externalId,
@@ -49,8 +48,8 @@ var group = {
       }, createSingleCallback);
     });
   },
-  getIn: function(ids) {
-    return new Promise(function(resolve, reject) {
+  getIn: (ids) => {
+    return new Promise((resolve, reject) => {
       getInIds({
         ids: ids
       }, createCallback);

@@ -3,7 +3,7 @@
 var edge = require('edge'),
   group = require('./room_group.js');
 
-var create = edge.func('sql-o', function() {
+var create = edge.func('sql-o', () => {
   /*
       INSERT INTO Rooms([ownerId], [externalId], [externalType], [name], [roomGroupId])
       OUTPUT INSERTED.*
@@ -11,7 +11,7 @@ var create = edge.func('sql-o', function() {
   */
 });
 
-var getInFolder = edge.func('sql-o', function() {
+var getInFolder = edge.func('sql-o', () => {
   /*
       SELECT * FROM Rooms
       WHERE [id] IN (
@@ -58,8 +58,8 @@ function createSingleCallback(reject, resolve) {
 }
 
 var room = {
-  create: function(userId, externalId, externalType, name, groupId) {
-    return new Promise(function(resolve, reject) {
+  create: (userId, externalId, externalType, name, groupId) => {
+    return new Promise((resolve, reject) => {
       create({
         userId: userId,
         externalId: externalId,
@@ -69,15 +69,15 @@ var room = {
       }, createSingleCallback(resolve, reject));
     });
   },
-  createRelation: function(userId, folderId, roomId) {
-    return new Promise(function(resolve, reject) {
+  createRelation: (userId, folderId, roomId) => {
+    return new Promise((resolve, reject) => {
       createRelation({
         folderId: folderId,
         roomId: roomId
       }, createSingleCallback(resolve, reject));
     });
   },
-  createRelations: function(userId, folderId, roomIds) {
+  createRelations: (userId, folderId, roomIds) => {
     return Promise.all(
       roomIds.map((roomId) => {
         createRelation({
@@ -93,7 +93,7 @@ var room = {
       })
     );
   },
-  deleteRelations: function(userId, folderId, roomIds) {
+  deleteRelations: (userId, folderId, roomIds) => {
     return Promise.all(
       roomIds.map((roomId) => {
         deleteRelation({
@@ -109,7 +109,7 @@ var room = {
       })
     );
   },
-  moveRelations: function(userId, from, to, roomIds) {
+  moveRelations: (userId, from, to, roomIds) => {
     return this.createRelations(userId, to, roomIds)
       .then(() => {
         return this.deleteRelations(userId, from, roomIds);
@@ -117,8 +117,8 @@ var room = {
         return Promise.resolve(result.length);
       });
   },
-  getInFolder: function(userId, folderId) {
-    return new Promise(function(resolve, reject) {
+  getInFolder: (userId, folderId) => {
+    return new Promise((resolve, reject) => {
       getInFolder({
         folderId: folderId
       }, createCallback(resolve, reject));

@@ -2,27 +2,27 @@
 
 var edge = require('edge');
 
-var create = edge.func('sql-o', function() {
+var create = edge.func('sql-o', () => {
   /*
       INSERT INTO Claims([userId], [key], [value])
       OUTPUT INSERTED.*
       VALUES(@userId, @key, @value)
   */
 });
-var createRegisterToken = edge.func('sql-o', function() {
+var createRegisterToken = edge.func('sql-o', () => {
   /*
       INSERT INTO Claims([userId], [key], [value])
       OUTPUT INSERTED.*
       VALUES(@userId, 'registerToken', NEWID())
   */
 });
-var single = edge.func('sql-o', function() {
+var single = edge.func('sql-o', () => {
   /*
       SELECT TOP(1) [value] FROM Claims
       WHERE [userId] = @userId AND [key] = @key
   */
 });
-var update = edge.func('sql-o', function() {
+var update = edge.func('sql-o', () => {
   /*
       UPDATE Claims
       SET [value] = @value
@@ -41,8 +41,8 @@ function createSingleCallback(reject, resolve) {
 }
 
 var claim = {
-  create: function(userId, key, value) {
-    return new Promise(function(resolve, reject) {
+  create: (userId, key, value) => {
+    return new Promise((resolve, reject) => {
       create({
         userId: userId,
         key: key,
@@ -50,23 +50,23 @@ var claim = {
       }, createSingleCallback(reject, resolve));
     });
   },
-  createRegisterToken: function(userId) {
-    return new Promise(function(resolve, reject) {
+  createRegisterToken: (userId) => {
+    return new Promise((resolve, reject) => {
       createRegisterToken({
         userId: userId
       }, createSingleCallback);
     });
   },
-  single: function(userId, key) {
-    return new Promise(function(resolve, reject) {
+  single: (userId, key) => {
+    return new Promise((resolve, reject) => {
       single({
         userId: userId,
         key: key
       }, createSingleCallback(reject, resolve));
     });
   },
-  update: function(userId, key, value) {
-    return new Promise(function(resolve, reject) {
+  update: (userId, key, value) => {
+    return new Promise((resolve, reject) => {
       create({
         userId: userId,
         key: key,
