@@ -1,7 +1,6 @@
 'use strict';
 
-let config = require('config'),
-  models = require('../models');
+let models = require('../models');
 
 let user = {
   me: function(req, res, next) {
