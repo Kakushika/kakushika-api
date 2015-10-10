@@ -1,12 +1,12 @@
 'use strict';
 
-let jwt = require('jsonwebtoken'),
+var jwt = require('jsonwebtoken'),
   config = require('config'),
   validator = require('validator'),
   models = require('../models');
 
-let auth = {
-  signup: function(req, res, next) {
+var auth = {
+  signup: (req, res, next) => {
     var email = req.body.email,
       password = req.body.password,
       name = req.body.name;
@@ -27,22 +27,23 @@ let auth = {
         message: 'invalid_name'
       });
     } else {
-      models.user.create(email, name, password).then(function(user) {
-        var token = jwt.sign({
-          id: user.id
-        }, config.jwt.secret, {
-          expiresInMinutes: 1440 // 24 hours
+      models.user.create(email, name, password)
+        .then((user) => {
+          var token = jwt.sign({
+            id: user.id
+          }, config.jwt.secret, {
+            expiresInMinutes: 1440 // 24 hours
+          });
+          res.status(201).json({
+            ok: true,
+            token: token
+          });
+        }).catch((err) => {
+          next(err);
         });
-        res.status(201).json({
-          ok: true,
-          token: token
-        });
-      }).catch(function(err) {
-        next(err);
-      });
     }
   },
-  login: function(req, res, next) {
+  login: (req, res, next) => {
     var email = req.body.email,
       password = req.body.password;
 
@@ -61,13 +62,13 @@ let auth = {
         where: {
           email: email
         }
-      }).then(function(user) {
+      }).then((user) => {
         if (!user) {
           return res.status(401).json({
             ok: false
           });
         }
-        user.verifyPassword(password, function(err, result) {
+        user.verifyPassword(password, (err, result) => {
           if (err) {
             return next(err);
           }
@@ -76,7 +77,7 @@ let auth = {
               ok: false
             });
           } else {
-            var token = jwt.sign({
+            let token = jwt.sign({
               id: user.id
             }, config.jwt.secret, {
               expiresInMinutes: 1440 // 24 hours
@@ -87,7 +88,7 @@ let auth = {
             });
           }
         });
-      }).catch(function(err) {
+      }).catch((err) => {
         return next(err);
       });
     }

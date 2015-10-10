@@ -1,18 +1,18 @@
 'use strict';
 
-let config = require('config'),
+var config = require('config'),
   request = require('superagent'),
   Slack = require('slack-api'),
   models = require('../models');
 
-let connect = {};
+var connect = {};
 
 connect.slack = {
-  oauth: function(req, res) {
+  oauth: (req, res) => {
     Slack.oauth.getUrl({
       client_id: config.slack.client_id,
       redirect_uri: config.host + config.slack.callback_path
-    }, function(error, url) {
+    }, (error, url) => {
       if (error) {
         res.redirect(config.host + config.slack.redirect_path.error);
       } else {
@@ -20,7 +20,7 @@ connect.slack = {
       }
     });
   },
-  callback: function(req, res) {
+  callback: (req, res) => {
     var userId = req.decoded.id,
       code = req.body.code;
 
@@ -33,7 +33,7 @@ connect.slack = {
         client_id: config.slack.client_id,
         client_secret: config.slack.client_secret,
         code: code
-      }, function(error, data) {
+      }, (error, data) => {
         if (error || !data.ok) {
           res.status(400).json({
             ok: false
@@ -41,34 +41,34 @@ connect.slack = {
         } else {
           request
             .get(config.slack.api_url + '/team.info?token=' + data.access_token)
-            .end(function(err, result) {
+            .end((err, result) => {
               if (err) {
                 return res.status(500).json({
                   ok: false
                 });
               }
               models.claim.create(userId, 'slack:' + result.body.team.id + ':token', data.access_token);
-              models.roomGroup.create(userId, result.body.team.id, 'slack', result.body.team.name).then(function(roomGroup) {
+              models.roomGroup.create(userId, result.body.team.id, 'slack', result.body.team.name).then((roomGroup) => {
                 Slack.channel.list({
                   token: data.access_token
-                }, function(err, data) {
+                }, (err, data) => {
                   if (err) {
                     console.error(err);
                     return;
                   }
-                  data.channels.forEach(function(channel) {
+                  data.channels.forEach((channel) => {
                     models.room.create(userId, channel.id, 'slack:channel', channel.name, roomGroup.id);
                   });
                 });
                 Slack.groups.list({
                   token: data.access_token
-                }, function(err, data) {
+                }, (err, data) => {
                   if (err) {
                     console.error(err);
                     return;
                   }
-                  data.groups.forEach(function(group) {
-                    models.room.create(userId,group.id,'slack:group',group.name,roomGroup.id);
+                  data.groups.forEach((group) => {
+                    models.room.create(userId, group.id, 'slack:group', group.name, roomGroup.id);
                   });
                 });
               });
