@@ -23,4 +23,4 @@ let user = {
   }
 };
 
-module.export = user;
+module.exports = user;
