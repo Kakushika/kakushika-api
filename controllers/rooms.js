@@ -3,7 +3,7 @@
 const models = require('../models');
 
 const rooms = {
-  read: (req, res, next) => {
+  readMessages: (req, res, next) => {
     let roomId = req.params.room_id;
 
     models.message.read(roomId, req.query.offset, req.query.limit)

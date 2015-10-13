@@ -32,7 +32,7 @@ router.post('/folders/:folder_id/reader', controllers.folders.createReader);
 router.delete('/folders/:folder_id/reader', controllers.folders.deteleteReader);
 router.get('/folders/resolve', controllers.folders.resolve);
 
-router.get('/rooms/:room_id/messages', controllers.rooms.reader);
+router.get('/rooms/:room_id/messages', controllers.rooms.readMessages);
 router.post('/rooms/:room_id/reader', controllers.rooms.createReader);
 router.delete('/rooms/:room_id/reader', controllers.rooms.deleteReader);
 
