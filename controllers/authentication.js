@@ -1,13 +1,13 @@
 'use strict';
 
-var jwt = require('jsonwebtoken'),
+const jwt = require('jsonwebtoken'),
   config = require('config'),
   validator = require('validator'),
   models = require('../models');
 
-var auth = {
+const auth = {
   signup: (req, res, next) => {
-    var email = req.body.email,
+    let email = req.body.email,
       password = req.body.password,
       name = req.body.name;
 
@@ -29,7 +29,7 @@ var auth = {
     } else {
       models.user.create(email, name, password)
         .then((user) => {
-          var token = jwt.sign({
+          let token = jwt.sign({
             id: user.id
           }, config.jwt.secret, {
             expiresInMinutes: 1440 // 24 hours
@@ -44,7 +44,7 @@ var auth = {
     }
   },
   login: (req, res, next) => {
-    var email = req.body.email,
+    let email = req.body.email,
       password = req.body.password;
 
     if (!email || !validator.isEmail(email)) {

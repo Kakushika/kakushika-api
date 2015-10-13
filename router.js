@@ -1,6 +1,6 @@
 'use strict';
 
-let controllers = require('./controllers'),
+const controllers = require('./controllers'),
   authorization = require('./middleware/authorization'),
   express = require('express'),
   router = express.Router();

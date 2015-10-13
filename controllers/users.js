@@ -1,10 +1,10 @@
 'use strict';
 
-let models = require('../models');
+const models = require('../models');
 
-let user = {
+const user = {
   me: (req, res, next) => {
-    var userId = req.decoded.id;
+    let userId = req.decoded.id;
 
     models.user.single(userId)
       .then((user) => {

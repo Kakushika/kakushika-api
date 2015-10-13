@@ -1,10 +1,10 @@
 'use strict';
 
-var models = require('../models');
+const models = require('../models');
 
-var folders = {
+const folders = {
   create: (req, res, next) => {
-    var userId = req.decoded.id;
+    let userId = req.decoded.id;
 
     models.folder.create(req.query.parent, userId, req.query.name)
       .then((folder) => {
@@ -16,7 +16,7 @@ var folders = {
       });
   },
   createChildren: (req, res) => {
-    var userId = req.decoded.id,
+    let userId = req.decoded.id,
       folders = req.body.folders,
       rooms = req.body.rooms,
       from = req.body.from,
@@ -41,7 +41,7 @@ var folders = {
     }
   },
   read: (req, res, next) => {
-    var userId = req.decoded.id,
+    let userId = req.decoded.id,
       folderId = req.params.folder_id;
 
     Promise.all([models.folder.getInFolder(userId, folderId), models.room.getInFolder(userId, folderId), models.folder.getReadablesUserInFolder(userId, folderId)])
@@ -59,7 +59,7 @@ var folders = {
       });
   },
   reader: (req, res) => {
-    var userId = req.decoded.id,
+    let userId = req.decoded.id,
       folderId = req.params.folder_id,
       targetUserId = req.body.userId;
 

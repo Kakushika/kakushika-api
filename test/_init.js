@@ -1,31 +1,22 @@
 'use strict';
 
-var supertest = require('supertest'),
+const supertest = require('supertest'),
   app = require('../app'),
   models = require('../models'),
-  date = require('../utils/date'),
-  task = require('../utils/task');
+  date = require('../utils/date');
 
-describe('Initialization', function() {
-  it('cleanup database', function(done) {
+describe('Initialization', () => {
+  it('cleanup database', (done) => {
     models.sequelize.sync({
       force: true
-    }).then(function() {
+    }).then(() => {
       done();
-    }).catch(function(err) {
+    }).catch((err) => {
       console.error(err);
     });
   });
 
-  if (!process.env.CI) {
-    it('cleanup tasks', function(done) {
-      task.deleteAll(function() {
-        done();
-      });
-    });
-  }
-
-  it('create user', function(done) {
+  it('create user', (done) => {
     models.User.create({
       email: 'hoge@hoge.net',
       passwordHash: 'hoge',

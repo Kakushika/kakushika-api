@@ -2,7 +2,7 @@
 
 /* jshint unused: false */
 
-var express = require('express'),
+const express = require('express'),
   app = express(),
   fs = require('fs'),
   logger = require('morgan'),
@@ -30,7 +30,7 @@ app.use(require('./router'));
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
-  var err = new Error('Not Found');
+  let err = new Error('Not Found');
   err.status = 404;
   next(err);
 });

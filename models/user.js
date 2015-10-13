@@ -1,11 +1,11 @@
 'use strict';
 
-var bcrypt = require('bcrypt-nodejs'),
+const bcrypt = require('bcrypt-nodejs'),
   config = require('config'),
   edge = require('edge'),
   claim = require('./claim.js');
 
-var create = edge.func('sql-o', () => {
+const create = edge.func('sql-o', () => {
   /*
       INSERT INTO Users([email], [name], [passwordHash])
       OUTPUT INSERTED.*
@@ -13,7 +13,7 @@ var create = edge.func('sql-o', () => {
   */
 });
 
-var single = edge.func('sql-o', () => {
+const single = edge.func('sql-o', () => {
   /*
       SELECT TOP(1) [email], [name], [registered], [home] FROM Users
       WHERE [id] = @id
@@ -27,14 +27,14 @@ var singleByEmail = edge.func('sql-o', () => {
   */
 });
 
-var isRegistered = edge.func('sql-o', () => {
+const isRegistered = edge.func('sql-o', () => {
   /*
       SELECT TOP(1) [id] FROM Users
       WHERE [email] = @email AND [passwordHash] = @hash AND [registered] = 1
   */
 });
 
-var register = edge.func('sql-o', () => {
+const register = edge.func('sql-o', () => {
   /*
       UPDATE Users
       SET [registered] = 1
@@ -68,7 +68,7 @@ function getHashPassword(password, callback) {
   });
 }
 
-var user = {
+const user = {
   create: (email, name, password) => {
     return new Promise((resolve, reject) => {
       getHashPassword(password, (err, hash) => {

@@ -1,8 +1,8 @@
 'use strict';
 
-var edge = require('edge');
+const edge = require('edge');
 
-var read = edge.func('sql-o', () => {
+const read = edge.func('sql-o', () => {
 /*
   SELECT m.*, e.id, e.userId, e.name FROM Messages AS m
   INNER JOIN externalUsers AS e ON m.externalUserId = e.id
@@ -13,7 +13,7 @@ var read = edge.func('sql-o', () => {
 */
 });
 
-var getInRoom = edge.func('sql-o', function() {
+const getInRoom = edge.func('sql-o', function() {
   /*
       SELECT m.*, a.[id] AS assetId, a.[type], a.[title], a.[link] FROM Messages AS m
       INNER JOIN Assets AS a ON m.[id] = a.[id]
@@ -45,17 +45,7 @@ function createCallback(resolve, reject) {
   };
 }
 
-function createSingleCallback(resolve, reject) {
-  return function callback(err, result) {
-    if (err) {
-      reject(err);
-    } else {
-      resolve(result[0]);
-    }
-  };
-}
-
-var message = {
+const message = {
   read: (roomId, offset, limit) => {
     return new Promise((resolve, reject) => {
       read({

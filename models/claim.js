@@ -1,28 +1,28 @@
 'use strict';
 
-var edge = require('edge');
+const edge = require('edge');
 
-var create = edge.func('sql-o', () => {
+const create = edge.func('sql-o', () => {
   /*
       INSERT INTO Claims([userId], [key], [value])
       OUTPUT INSERTED.*
       VALUES(@userId, @key, @value)
   */
 });
-var createRegisterToken = edge.func('sql-o', () => {
+const createRegisterToken = edge.func('sql-o', () => {
   /*
       INSERT INTO Claims([userId], [key], [value])
       OUTPUT INSERTED.*
       VALUES(@userId, 'registerToken', NEWID())
   */
 });
-var single = edge.func('sql-o', () => {
+const single = edge.func('sql-o', () => {
   /*
       SELECT TOP(1) [value] FROM Claims
       WHERE [userId] = @userId AND [key] = @key
   */
 });
-var update = edge.func('sql-o', () => {
+const update = edge.func('sql-o', () => {
   /*
       UPDATE Claims
       SET [value] = @value
@@ -40,7 +40,7 @@ function createSingleCallback(reject, resolve) {
   };
 }
 
-var claim = {
+const claim = {
   create: (userId, key, value) => {
     return new Promise((resolve, reject) => {
       create({
@@ -54,7 +54,7 @@ var claim = {
     return new Promise((resolve, reject) => {
       createRegisterToken({
         userId: userId
-      }, createSingleCallback);
+      }, createSingleCallback(resolve, reject));
     });
   },
   single: (userId, key) => {

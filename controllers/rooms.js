@@ -1,11 +1,10 @@
 'use strict';
 
-var models = require('../models');
+const models = require('../models');
 
-var rooms = {
+const rooms = {
   read: (req, res, next) => {
-    var userId = req.decoded.id,
-      roomId = req.params.room_id;
+    let roomId = req.params.room_id;
 
     models.message.read(roomId, req.query.offset, req.query.limit)
       .then((messages) => {

@@ -1,11 +1,11 @@
 'use strict';
 
-var config = require('config'),
+const config = require('config'),
   request = require('superagent'),
   Slack = require('slack-api'),
   models = require('../models');
 
-var connect = {};
+const connect = {};
 
 connect.slack = {
   oauth: (req, res) => {
@@ -21,7 +21,7 @@ connect.slack = {
     });
   },
   callback: (req, res) => {
-    var userId = req.decoded.id,
+    let userId = req.decoded.id,
       code = req.body.code;
 
     if (!code) {

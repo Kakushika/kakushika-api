@@ -1,8 +1,8 @@
 'use strict';
 
-var edge = require('edge');
+const edge = require('edge');
 
-var create = edge.func('sql-o', () => {
+const create = edge.func('sql-o', () => {
   /*
       INSERT INTO Folders([name], [ownerId])
       OUTPUT INSERTED.*
@@ -10,7 +10,7 @@ var create = edge.func('sql-o', () => {
   */
 });
 
-var createRelation = edge.func('sql-o', () => {
+const createRelation = edge.func('sql-o', () => {
   /*
       INSERT INTO R_FoldersEdges([parentFolderId], [childFolderId])
       OUTPUT INSERTED.id, INSERTED.name
@@ -18,7 +18,7 @@ var createRelation = edge.func('sql-o', () => {
   */
 });
 
-var createReadable = edge.func('sql-o', () => {
+const createReadable = edge.func('sql-o', () => {
   /*
       INSERT INTO R_FolderReadableUsers(userId, folderId)
       OUTPUT INSERTED.*
@@ -26,7 +26,7 @@ var createReadable = edge.func('sql-o', () => {
    */
 });
 
-var getInFolder = edge.func('sql-o', () => {
+const getInFolder = edge.func('sql-o', () => {
   /*
       SELECT f.* FROM Folders AS f
       INNER JOIN R_FoldersEdge AS fse ON fse.[childFolderId] = f.[id]
@@ -34,7 +34,7 @@ var getInFolder = edge.func('sql-o', () => {
   */
 });
 
-var getReadablesUserInFolder = edge.func('sql-o', () => {
+const getReadablesUserInFolder = edge.func('sql-o', () => {
   /*
       SELECT u.id AS id, u.name AS name FROM R_FolderReadableUsers AS fru
       INNER JOIN Users AS u ON u.id = fru.userId
@@ -42,7 +42,7 @@ var getReadablesUserInFolder = edge.func('sql-o', () => {
    */
 });
 
-var getReadablesInFolder = edge.func('sql-o', () => {
+const getReadablesInFolder = edge.func('sql-o', () => {
   /*
       SELECT f.[id] FROM Folders AS f
       INNER JOIN R_FoldersEdge AS fse ON fse.[childFolderId] = f.[id]
@@ -53,7 +53,7 @@ var getReadablesInFolder = edge.func('sql-o', () => {
   */
 });
 
-var deleteRelation = edge.func('sql-o', () => {
+const deleteRelation = edge.func('sql-o', () => {
   /*
       DELETE FROM R_FoldersEdges AS fe
       OUTPUT DELETED.*
@@ -82,7 +82,7 @@ function createSingleCallback(resolve, reject) {
 }
 
 function resolveName(userId, parentId, folderName) {
-  var m = folderName.match(/(.+)\((\d+)\)/),
+  let m = folderName.match(/(.+)\((\d+)\)/),
     name = folderName,
     id;
   if (m) {
@@ -97,7 +97,7 @@ function resolveName(userId, parentId, folderName) {
     }, (err, result) => {
       if (!err) {
         if (id) {
-          var index = result.indexOf(id);
+          let index = result.indexOf(id);
           if (index !== -1) {
             resolve(result[index]);
           } else {
@@ -116,8 +116,8 @@ function resolveName(userId, parentId, folderName) {
 }
 
 function resolvePath(userId, path) {
-  var name = path.shift();
-  var promise = resolveName(userId, null, name);
+  let name = path.shift(),
+    promise = resolveName(userId, null, name);
   while (!!(name = path.shift())) {
     promise.then((id) => {
       return resolveName(userId, id, name);
@@ -126,7 +126,7 @@ function resolvePath(userId, path) {
   return promise;
 }
 
-var folder = {
+const folder = {
   create: (parentFolderId, userId, name) => {
     return new Promise((resolve, reject) => {
       create({
