@@ -2,12 +2,12 @@
 
 const express = require('express'),
   router = express.Router(),
-  authorization = require('./middleware/authorization'),
-  users = require('./controllers').users,
-  connect = require('./controllers').connect,
-  folders = require('./controllers').folders,
-  rooms = require('./controllers').rooms,
-  search = require('./controllers').search;
+  authorization = require('../middleware/authorization'),
+  users = require('../controllers').users,
+  connect = require('../controllers').connect,
+  folders = require('../controllers').folders,
+  rooms = require('../controllers').rooms,
+  search = require('../controllers').search;
 
 router.use(authorization);
 

@@ -6,7 +6,7 @@
  * When you write route settings in this area, it will be published without authentication.
  */
 
-const authentication = require('./controllers').authenticationl,
+const authentication = require('../controllers').authenticationl,
   express = require('express'),
   router = express.Router();
 
