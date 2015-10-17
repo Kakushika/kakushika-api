@@ -12,6 +12,17 @@ const rooms = {
       }).catch((err) => {
         return next(err);
       });
+  },
+  createReader: (req, res, next) => {
+    let userId = req.body.userId,
+      roomId = req.params.roomId;
+
+    models.roomReadable.create(userId, roomId)
+      .then(() => {
+        return res.status(201);
+      }).catch((err) => {
+        return next(err);
+      });
   }
 };
 
