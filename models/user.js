@@ -1,79 +1,147 @@
 'use strict';
 
-var bcrypt = require('bcrypt-nodejs'),
-  config = require('config');
+const bcrypt = require('bcrypt-nodejs'),
+  config = require('config'),
+  edge = require('edge'),
+  claim = require('./claim.js');
 
-module.exports = function(sequelize, DataTypes) {
-  var User = sequelize.define('User', {
-    id: {
-      type: DataTypes.INTEGER,
-      primaryKey: true,
-      autoIncrement: true
-    },
-    email: {
-      type: DataTypes.STRING,
-      unique: true
-    },
-    passwordHash: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      set: function(val) {
-        var salt = bcrypt.genSaltSync(config.login.password.cost);
-        var hash = bcrypt.hashSync(val, salt);
-        this.setDataValue('passwordHash', hash);
-      }
-    },
-    name: {
-      type: DataTypes.STRING,
-      allowNull: false
+const create = edge.func('sql-o', () => {
+  /*
+      INSERT INTO Users([email], [name], [passwordHash])
+      OUTPUT INSERTED.*
+      VALUES(@email, @name, @hash)
+  */
+});
+
+const readsByName = edge.func('sql-o', () => {
+  /*
+    SELECT TOP(@limit) [id], [name] FROM Users
+    WHERE [name] LIKE @startWith + '%'
+   */
+});
+
+const single = edge.func('sql-o', () => {
+  /*
+      SELECT TOP(1) [email], [name], [registered], [home] FROM Users
+      WHERE [id] = @id
+  */
+});
+
+var singleByEmail = edge.func('sql-o', () => {
+  /*
+      SELECT TOP(1) [id], [email], [name], [registered] FROM Users
+      WHERE [email] = @email
+  */
+});
+
+const isRegistered = edge.func('sql-o', () => {
+  /*
+      SELECT TOP(1) [id] FROM Users
+      WHERE [email] = @email AND [passwordHash] = @hash AND [registered] = 1
+  */
+});
+
+const register = edge.func('sql-o', () => {
+  /*
+      UPDATE Users
+      SET [registered] = 1
+      WHERE [id] = @id
+  */
+});
+
+function createCallback(resolve, reject) {
+  return function callback(err, result) {
+    if (err) {
+      reject(err);
+    } else {
+      resolve(result);
     }
-  }, {
-    classMethods: {
-      associate: function(models) {
-        User.belongsToMany(models.Room, {
-          through: models.Readable,
-          as: 'ReadableRooms',
-          foreignKey: 'userId'
-        });
-        User.hasMany(models.Claim, {
-          as: 'Claims',
-          foreignKey: 'userId'
-        });
-        User.hasMany(models.ExternalUser, {
-          as: 'ExternalUsers',
-          foreignKey: 'userId'
-        });
-        User.hasMany(models.AnalyticsGroup, {
-          as: 'AnalyticsGroup',
-          foreignKey: 'userId'
-        });
-        User.hasMany(models.Room, {
-          as: 'Rooms',
-          foreignKey: 'userId'
-        });
-        User.belongsToMany(models.AnalyticsGroup, {
-          through: models.AnalyticsUser,
-          as: 'AnalyticsGroups',
-          foreignKey: 'userId'
-        });
-      }
-    },
-    instanceMethods: {
-      setPassword: function(password, done) {
-        return bcrypt.genSalt(config.login.password.cost, function(err, salt) {
-          return bcrypt.hash(password, salt, function(error, hash) {
-            this.passwordHash = hash;
-            return done();
-          });
-        });
-      },
-      verifyPassword: function(password, done) {
-        bcrypt.compare(password, this.passwordHash, function(err, res) {
-          return done(err, res);
-        });
-      }
+  };
+}
+
+function createSingleCallback(resolve, reject) {
+  return function callback(err, result) {
+    if (err) {
+      reject(err);
+    } else {
+      resolve(result[0]);
     }
+  };
+}
+
+function getHashPassword(password, callback) {
+  bcrypt.genSalt(config.login.password.cost, (err, salt) => {
+    bcrypt.hash(password, salt, callback);
   });
+}
 
-  return User;
+const user = {
+  create: (email, name, password) => {
+    return new Promise((resolve, reject) => {
+      getHashPassword(password, (err, hash) => {
+        if (err) {
+          return reject(err);
+        }
+        create({
+          email: email,
+          name: name,
+          hash: hash
+        }, createSingleCallback(resolve, reject));
+      });
+    }).then((user) => {
+      return new Promise((resolve, reject) => {
+        claim.createRegisterToken(user)
+          .then((claim) => {
+            resolve({
+              user: user,
+              registerToken: claim.value
+            });
+          }, reject);
+      });
+    });
+  },
+  readsByName: (startWith, limit) => {
+    return new Promise((resolve, reject) => {
+      readsByName({
+        startWith,
+        limit
+      }, createCallback(resolve, reject));
+    });
+  },
+  single: (id) => {
+    return new Promise((resolve, reject) => {
+      single({
+        id: id
+      }, createSingleCallback(resolve, reject));
+    });
+  },
+  singleByEmail: (email) => {
+    return new Promise((resolve, reject) => {
+      singleByEmail({
+        email: email
+      }, createSingleCallback(resolve, reject));
+    });
+  },
+  register: (id) => {
+    return new Promise((resolve, reject) => {
+      register({
+        id: id
+      }, createCallback(resolve, reject));
+    });
+  },
+  isRegistered: (email, password) => {
+    return new Promise((resolve, reject) => {
+      getHashPassword(password, (err, hash) => {
+        if (err) {
+          return reject(err);
+        }
+        isRegistered({
+          email: email,
+          hash: hash
+        }, createSingleCallback(resolve, reject));
+      });
+    });
+  }
 };
+
+module.exports = user;

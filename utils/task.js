@@ -1,28 +1,28 @@
 'use strict';
 
-var fs = require('fs'),
+const fs = require('fs'),
   config = require('config').azure.scheduler,
   schedulerManagement = require('azure-scheduler'),
   date = require('./date');
 
-var connect = function(callback) {
-  fs.readFile(__dirname + '/' + config.subscriptionId + '.pem', 'utf8', function(err, pem) {
+const connect = (callback) => {
+  fs.readFile(`${__dirname}/${config.subscriptionId}.pem`, 'utf8', (err, pem) => {
     if (err) {
       console.error(err);
       return;
     }
-    var credentials = schedulerManagement.createCertificateCloudCredentials({
+    let credentials = schedulerManagement.createCertificateCloudCredentials({
       subscriptionId: config.subscriptionId,
       pem: pem
     });
-    var client = schedulerManagement.createSchedulerClient(config.cloudService, config.taskname, credentials, config.url);
+    let client = schedulerManagement.createSchedulerClient(config.cloudService, config.taskname, credentials, config.url);
     return callback(client);
   });
 };
 
-var task = {
-  create: function(user_id, room_id) {
-    connect(function(client) {
+const task = {
+  create: (user_id, room_id) => {
+    connect((client) => {
       client.jobs.createOrUpdate(room_id, {
         startTime: date.getTimeStamp(),
         action: {
@@ -31,11 +31,11 @@ var task = {
             storageAccountName: 'kksk',
             queueName: config.queuename,
             sasToken: config.sasToken,
-            message: '{ "user": ' + user_id + ', "room": ' + room_id + ', "external": "slack" }'
+            message: `{ "user": ${user_id}, "room": ${room_id}, "external": "slack" }`
           }
         },
         recurrence: config.recurrence
-      }, function(err, result) {
+      }, (err, result) => {
         if (err) {
           console.error(err);
         }
@@ -43,24 +43,24 @@ var task = {
       });
     });
   },
-  list: function(callback) {
-    connect(function(client) {
-      client.jobs.list({}, function(err, result) {
+  list: (callback) => {
+    connect((client) => {
+      client.jobs.list({}, (err, result) => {
         callback(err, result);
       });
     });
   },
-  deleteAll: function(callback) {
-    connect(function(client) {
-      client.jobs.list({}, function(err, result) {
+  deleteAll: (callback) => {
+    connect((client) => {
+      client.jobs.list({}, (err, result) => {
         if (err) {
           console.error(err);
         }
-        if(!result.jobs.length) {
+        if (!result.jobs.length) {
           return callback();
         }
-        result.jobs.forEach(function(job, idx) {
-          client.jobs.deleteMethod(job.id, function() {
+        result.jobs.forEach((job, idx) => {
+          client.jobs.deleteMethod(job.id, () => {
             if (idx === result.length) {
               callback();
             }

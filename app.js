@@ -2,17 +2,15 @@
 
 /* jshint unused: false */
 
-var express = require('express'),
+const express = require('express'),
   app = express(),
   fs = require('fs'),
   logger = require('morgan'),
-  cookieParser = require('cookie-parser'),
   bodyParser = require('body-parser'),
   compression = require('compression'),
   helmet = require('helmet'),
   cors = require('cors'),
-  config = require('config'),
-  models = require('./models');
+  config = require('config');
 
 // Use helmet to secure Express headers
 app.use(helmet());
@@ -28,11 +26,11 @@ app.use(bodyParser.urlencoded({
 }));
 app.use(compression());
 
-app.use(require('./controllers'));
+app.use(require('./routers'));
 
 // catch 404 and forward to error handler
-app.use(function(req, res, next) {
-  var err = new Error('Not Found');
+app.use((req, res, next) => {
+  let err = new Error('Not Found');
   err.status = 404;
   next(err);
 });
@@ -42,7 +40,7 @@ app.use(function(req, res, next) {
 // development error handler
 // will print stacktrace
 if (app.get('env') === 'development') {
-  app.use(function(err, req, res, next) {
+  app.use((err, req, res, next) => {
     res.status(err.status || 500);
     res.json({
       ok: false,
@@ -54,7 +52,7 @@ if (app.get('env') === 'development') {
 
 // production error handler
 // no stacktraces leaked to user
-app.use(function(err, req, res, next) {
+app.use((err, req, res, next) => {
   res.status(err.status || 500);
   res.json({
     ok: false,

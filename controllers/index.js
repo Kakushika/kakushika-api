@@ -1,20 +1,13 @@
 'use strict';
 
-var fs = require('fs'),
-  express = require('express'),
-  router = express.Router();
+const fs = require('fs'),
+  controllers = {};
 
-fs.readdirSync(__dirname + '/').forEach(function(file) {
-  if (~file.indexOf('.js') && !~file.indexOf('index')) {
-    var fileName = file.substring(0, file.indexOf('.'));
-    router.use('/' + fileName, require('./' + fileName));
+fs.readdirSync(`${__dirname}/`).forEach((file) => {
+  if (file.includes('.js') && !file.includes('index')) {
+    let fileName = file.substring(0, file.indexOf('.'));
+    controllers[fileName] = require(`./${fileName}`);
   }
 });
 
-router.get('/', function(req, res) {
-  res.json({
-    ok: true
-  });
-});
-
-module.exports = router;
+module.exports = controllers;
