@@ -13,6 +13,13 @@ const create = edge.func('sql-o', () => {
   */
 });
 
+const readsByName = edge.func('sql-o', () => {
+  /*
+    SELECT TOP(@limit) [id], [name] FROM Users
+    WHERE [name] LIKE @startWith + '%'
+   */
+});
+
 const single = edge.func('sql-o', () => {
   /*
       SELECT TOP(1) [email], [name], [registered], [home] FROM Users
@@ -91,6 +98,14 @@ const user = {
             });
           }, reject);
       });
+    });
+  },
+  readsByName: (startWith, limit) => {
+    return new Promise((resolve, reject) => {
+      readsByName({
+        startWith,
+        limit
+      }, createCallback(resolve, reject));
     });
   },
   single: (id) => {

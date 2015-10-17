@@ -20,6 +20,20 @@ const user = {
       }).catch((err) => {
         return next(err);
       });
+  },
+  read: (req, res, next) => {
+    let startWith = req.query.start_with,
+      limit = req.query.limit;
+
+    models.user.readsByName(startWith, limit)
+      .then((users) => {
+        if (!users) {
+          return res.status(404);
+        }
+        return res.json(users);
+      }).catch((err) => {
+        return next(err);
+      });
   }
 };
 
