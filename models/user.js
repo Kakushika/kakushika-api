@@ -27,7 +27,7 @@ const single = edge.func('sql-o', () => {
   */
 });
 
-var singleByEmail = edge.func('sql-o', () => {
+const singleByEmail = edge.func('sql-o', () => {
   /*
       SELECT TOP(1) [id], [email], [name], [registered] FROM Users
       WHERE [email] = @email
