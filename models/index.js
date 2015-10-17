@@ -1,19 +1,13 @@
 'use strict';
 
-const user = require('./user.js'),
-  claim = require('./claim.js'),
-  roomGroup = require('./room_group.js'),
-  room = require('./room.js'),
-  message = require('./message.js'),
-  folder = require('./folder.js');
+const fs = require('fs'),
+  models = {};
 
-const models = {
-  user,
-  claim,
-  roomGroup,
-  room,
-  message,
-  folder
-};
+fs.readdirSync(`${__dirname}/`).forEach((file) => {
+  if (file.includes('.js') && !file.includes('index')) {
+    let fileName = file.substring(0, file.indexOf('.'));
+    models[fileName] = require(`./${fileName}`);
+  }
+});
 
 module.exports = models;
