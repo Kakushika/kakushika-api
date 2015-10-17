@@ -26,7 +26,7 @@ app.use(bodyParser.urlencoded({
 }));
 app.use(compression());
 
-app.use(require('./router'));
+app.use(require('./routers'));
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
