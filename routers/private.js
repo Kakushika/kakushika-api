@@ -24,7 +24,6 @@ router.post('/folders/:folder_id/children', folders.createChildren);
 router.delete('/folders/:folder_id/children', folders.deleteChildren);
 router.post('/folders/:folder_id/reader', folders.createReader);
 router.delete('/folders/:folder_id/reader', folders.deteleteReader);
-router.get('/folders/resolve', folders.resolve);
 
 router.get('/rooms/:room_id/messages', rooms.readMessages);
 router.post('/rooms/:room_id/reader', rooms.createReader);

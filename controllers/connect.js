@@ -84,4 +84,7 @@ connect.slack = {
   }
 };
 
+connect.hipchat = (req, res, next) => {
+};
+
 module.exports = connect;

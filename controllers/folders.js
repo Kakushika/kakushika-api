@@ -40,6 +40,7 @@ const folders = {
       return res.status(201);
     }
   },
+  deleteChildren: (req, res, next) => {},
   read: (req, res, next) => {
     let userId = req.decoded.id,
       folderId = req.params.folder_id;
@@ -58,14 +59,15 @@ const folders = {
         return next(err);
       });
   },
-  reader: (req, res) => {
+  createReader: (req, res) => {
     let userId = req.decoded.id,
       folderId = req.params.folder_id,
       targetUserId = req.body.userId;
 
     models.folder.createReadable(userId, folderId, targetUserId);
     return res.status(201);
-  }
+  },
+  deteleteReader: (req, res, next) => {},
 };
 
-module.export = folders;
+module.exports = folders;
