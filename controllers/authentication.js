@@ -92,6 +92,8 @@ const auth = {
         return next(err);
       });
     }
+  },
+  reflesh: (req, res, next) => {
   }
 };
 

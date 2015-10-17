@@ -23,7 +23,8 @@ const rooms = {
       }).catch((err) => {
         return next(err);
       });
-  }
+  },
+  deleteReader: (req, res, next) => {}
 };
 
-module.export = rooms;
+module.exports = rooms;
