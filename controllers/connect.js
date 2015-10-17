@@ -9,12 +9,14 @@ const connect = {};
 
 connect.slack = {
   oauth: (req, res) => {
+    let type = req.query.type;
+
     Slack.oauth.getUrl({
       client_id: config.slack.client_id,
-      redirect_uri: config.host + config.slack.callback_path
-    }, (error, url) => {
-      if (error) {
-        res.redirect(config.host + config.slack.redirect_path.error);
+      redirect_uri: config.slack.callback_path[type]
+    }, (err, url) => {
+      if (err) {
+        res.redirect(config.slack.redirect_uri[type]);
       } else {
         res.redirect(url);
       }

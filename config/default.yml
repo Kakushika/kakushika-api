@@ -18,9 +18,12 @@ slack:
   api_url: 'https://slack.com/api'
   client_id: '9266174033.10815675943'
   client_secret: '7c17975401747c79cd43160b76255d92'
-  callback_path: '/#/callback/slack/success'
+  callback_path:
+    web: 'https://api/kksk.io/#/callback/slack/success'
+    mobile: 'app://kksk.io/slack/success'
   redirect_path:
-    error: '/#/callback/slack/error'
+    web: 'https://api/kksk.io/#/callback/slack/error'
+    mobile: 'app://kksk.io/slack/error'
 
 applicationinsights:
   instrumentation_key: '45bb61c1-0777-4d55-939f-fd364fb25cbd'
