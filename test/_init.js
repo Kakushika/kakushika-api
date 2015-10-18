@@ -2,8 +2,7 @@
 
 const supertest = require('supertest'),
   app = require('../app'),
-  models = require('../models'),
-  date = require('../utils/date');
+  models = require('../models');
 
 describe('Initialization', () => {
   it('cleanup database', (done) => {
@@ -83,9 +82,7 @@ describe('Initialization', () => {
   it('create message', function(done) {
     models.Message.create({
       roomId: global.roomId,
-      raw: 'hogehoge',
-      message: 'hogehoge',
-      pubDate: date.getTimeStamp()
+      message: 'hogehoge'
     }).then(function() {
       done();
     }).catch(function(err) {

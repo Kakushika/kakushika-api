@@ -3,7 +3,7 @@
 const fs = require('fs'),
   config = require('config').azure.scheduler,
   schedulerManagement = require('azure-scheduler'),
-  date = require('./date');
+  moment = require('moment');
 
 const connect = (callback) => {
   fs.readFile(`${__dirname}/${config.subscriptionId}.pem`, 'utf8', (err, pem) => {
@@ -24,7 +24,7 @@ const task = {
   create: (user_id, room_id) => {
     connect((client) => {
       client.jobs.createOrUpdate(room_id, {
-        startTime: date.getTimeStamp(),
+        startTime: new Date().toISOString(),
         action: {
           type: 'storageQueue',
           queueMessage: {
