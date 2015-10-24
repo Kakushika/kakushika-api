@@ -20,6 +20,7 @@ router.post('/connect/hipchat', connect.hipchat);
 
 router.post('/folders', folders.create);
 router.get('/folders/:folder_id', folders.read);
+router.patch('/folders/:folder_id', folders.rename);
 router.post('/folders/:folder_id/children', folders.createChildren);
 router.delete('/folders/:folder_id/children', folders.deleteChildren);
 router.post('/folders/:folder_id/reader', folders.createReader);

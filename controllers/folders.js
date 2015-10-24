@@ -15,6 +15,18 @@ const folders = {
         return next(err);
       });
   },
+  rename: (req, res) => {
+    let userId = req.decoded.id,
+      folderId = req.params.folder_id,
+      folderName = req.query.name;
+
+    models.folder.rename(userId, folderId, folderName)
+      .then(() => {
+        res.status(200);
+      }).catch((err) => {
+        return next(err);
+      });
+  },
   createChildren: (req, res) => {
     let userId = req.decoded.id,
       folders = req.body.folders,

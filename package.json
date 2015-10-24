@@ -24,7 +24,7 @@
   "dependencies": {
     "applicationinsights": "^0.15.6",
     "azure-scheduler": "^0.10.1",
-    "bcrypt-nodejs": "0.0.3",
+    "bcryptjs": "^2.3.0",
     "body-parser": "^1.14.1",
     "compression": "^1.6.0",
     "config": "^1.16.0",
