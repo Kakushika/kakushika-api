@@ -53,6 +53,13 @@ const getReadablesInFolder = edge.func('sql-o', () => {
   */
 });
 
+const updateName = edge.func('sql-o', () => {
+  /*
+    UPDATE Folders AS f SET f.[name] = @folderName
+    WHERE f.[id] = @folderId AND f.[ownerId] = @userId
+   */
+});
+
 const deleteRelation = edge.func('sql-o', () => {
   /*
       DELETE FROM R_FoldersEdges AS fe
@@ -212,6 +219,15 @@ const folder = {
     return new Promise((resolve, reject) => {
       getReadablesUserInFolder({
         folderId: folderId
+      }, createSingleCallback(resolve, reject));
+    });
+  },
+  rename: (userId, folderId, folderName) => {
+    return new Promise((resolve, reject) => {
+      updateName({
+        userId,
+        folderId,
+        folderName
       }, createSingleCallback(resolve, reject));
     });
   }
