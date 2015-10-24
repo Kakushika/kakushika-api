@@ -1,6 +1,6 @@
 'use strict';
 
-const bcrypt = require('bcrypt-nodejs'),
+const bcrypt = require('bcryptjs'),
   config = require('config'),
   edge = require('edge'),
   claim = require('./claim.js');
