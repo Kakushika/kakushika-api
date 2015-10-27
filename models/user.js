@@ -113,7 +113,7 @@ const user = {
         if (err) {
           return reject(err);
         }
-        create({
+        verify({
           email,
           hash
         }, createSingleCallback(resolve, reject));
