@@ -58,43 +58,27 @@ const auth = {
         message: 'invalid_password'
       });
     } else {
-      models.User.findOne({
-        where: {
-          email: email
-        }
-      }).then((user) => {
-        if (!user) {
-          return res.status(401).json({
-            ok: false
+      models.user.verify(email, password)
+        .then((user) => {
+          if (!user || !user.id) {
+            return res.status(401);
+          }
+          let token = jwt.sign({
+            id: user.id
+          }, config.jwt.secret, {
+            expiresInMinutes: 1440 // 24 hours
           });
-        }
-        user.verifyPassword(password, (err, result) => {
-          if (err) {
-            return next(err);
-          }
-          if (!result) {
-            return res.status(401).json({
-              ok: false
-            });
-          } else {
-            let token = jwt.sign({
-              id: user.id
-            }, config.jwt.secret, {
-              expiresInMinutes: 1440 // 24 hours
-            });
-            res.json({
-              ok: true,
-              token: token
-            });
-          }
+          res.json({
+            token: token,
+            expires: new Date(Date.now() + 1440 * 60 * 1000).toISOString(),
+            refleshToken: ''
+          });
+        }).catch((err) => {
+          return next(err);
         });
-      }).catch((err) => {
-        return next(err);
-      });
     }
   },
-  reflesh: (req, res, next) => {
-  }
+  reflesh: (req, res, next) => {}
 };
 
 module.exports = auth;
