@@ -13,6 +13,13 @@ const create = edge.func('sql-o', () => {
   */
 });
 
+const verify = edge.func('sql-o', () => {
+  /*
+  SELECT TOP(1) [id], [name], [home] FROM Users
+  WHERE [email] = @email AND [passwordHash] = @passwordHash
+   */
+});
+
 const readsByName = edge.func('sql-o', () => {
   /*
     SELECT TOP(@limit) [id], [name] FROM Users
@@ -86,6 +93,29 @@ const user = {
           email: email,
           name: name,
           hash: hash
+        }, createSingleCallback(resolve, reject));
+      });
+    }).then((user) => {
+      return new Promise((resolve, reject) => {
+        claim.createRegisterToken(user)
+          .then((claim) => {
+            resolve({
+              user: user,
+              registerToken: claim.value
+            });
+          }, reject);
+      });
+    });
+  },
+  verify: (email, password) => {
+    return new Promise((resolve, reject) => {
+      getHashPassword(password, (err, hash) => {
+        if (err) {
+          return reject(err);
+        }
+        create({
+          email,
+          hash
         }, createSingleCallback(resolve, reject));
       });
     }).then((user) => {
