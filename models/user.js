@@ -109,13 +109,13 @@ const user = {
   },
   verify: (email, password) => {
     return new Promise((resolve, reject) => {
-      getHashPassword(password, (err, hash) => {
+      getHashPassword(password, (err, passwordHash) => {
         if (err) {
           return reject(err);
         }
         verify({
           email,
-          hash
+          passwordHash
         }, createSingleCallback(resolve, reject));
       });
     }).then((user) => {
