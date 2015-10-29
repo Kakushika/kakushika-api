@@ -118,16 +118,6 @@ const user = {
           passwordHash
         }, createSingleCallback(resolve, reject));
       });
-    }).then((user) => {
-      return new Promise((resolve, reject) => {
-        claim.createRegisterToken(user)
-          .then((claim) => {
-            resolve({
-              user: user,
-              registerToken: claim.value
-            });
-          }, reject);
-      });
     });
   },
   readsByName: (startWith, limit) => {
