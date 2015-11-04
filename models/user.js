@@ -117,13 +117,13 @@ const user = {
           return reject(err);
         }
         console.log(user);
-        bcrypt.compare(password, user.passwordHash, (err, res) => {
+        bcrypt.compare(password, user[0].passwordHash, (err, res) => {
           console.log(err);
           if (err || !res) {
             return reject(err);
           }
           console.log(res);
-          return resolve(user);
+          return resolve(user[0]);
         });
       });
     });
