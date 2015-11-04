@@ -13,10 +13,10 @@ const create = edge.func('sql-o', () => {
   */
 });
 
-const verify = edge.func('sql-o', () => {
+const readByEmail = edge.func('sql-o', () => {
   /*
-  SELECT TOP(1) [id], [name], [home] FROM Users
-  WHERE [email] = @email AND [passwordHash] = @passwordHash
+    SELECT TOP(1) [id], [email], [name], [passwordHash] FROM Users
+    WHERE [email] = @email
    */
 });
 
@@ -109,14 +109,18 @@ const user = {
   },
   verify: (email, password) => {
     return new Promise((resolve, reject) => {
-      getHashPassword(password, (err, passwordHash) => {
+      readByEmail({
+        email
+      }, (err, user) => {
         if (err) {
           return reject(err);
         }
-        verify({
-          email,
-          passwordHash
-        }, createSingleCallback(resolve, reject));
+        bcrypt.compare(password, user.passwordHash, (err, res) => {
+          if (err || !res) {
+            return reject(err);
+          }
+          return resolve(user);
+        });
       });
     });
   },

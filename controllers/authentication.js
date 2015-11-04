@@ -46,7 +46,7 @@ const auth = {
   login: (req, res, next) => {
     let email = req.body.email,
       password = req.body.password;
-
+console.log(email, ':', password);
     if (!email || !validator.isEmail(email)) {
       res.status(400).json({
         ok: false,
@@ -58,8 +58,10 @@ const auth = {
         message: 'invalid_password'
       });
     } else {
+console.log('check pass');
       models.user.verify(email, password)
         .then((user) => {
+console.log(user);
           if (!user || !user.id) {
             return res.status(401);
           }
