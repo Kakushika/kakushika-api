@@ -16,9 +16,13 @@ connect.slack = {
       redirect_uri: config.slack.callback_path[type]
     }, (err, url) => {
       if (err) {
-        res.redirect(config.slack.redirect_uri[type]);
+        res.status(500).json({
+          redirect_url: config.slack.redirect_uri[type]
+        });
       } else {
-        res.redirect(url);
+        res.json({
+          redirect_url: url
+        });
       }
     });
   },
@@ -84,7 +88,6 @@ connect.slack = {
   }
 };
 
-connect.hipchat = (req, res, next) => {
-};
+connect.hipchat = (req, res, next) => {};
 
 module.exports = connect;
