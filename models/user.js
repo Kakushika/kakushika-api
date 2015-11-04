@@ -112,13 +112,17 @@ const user = {
       readByEmail({
         email
       }, (err, user) => {
+        console.log(err);
         if (err) {
           return reject(err);
         }
+        console.log(user);
         bcrypt.compare(password, user.passwordHash, (err, res) => {
+          console.log(err);
           if (err || !res) {
             return reject(err);
           }
+          console.log(res);
           return resolve(user);
         });
       });
