@@ -73,8 +73,8 @@ const auth = {
             expires: new Date(Date.now() + 1440 * 60 * 1000).toISOString(),
             refleshToken: ''
           });
-        }).catch((err) => {
-          return next(err);
+        }).catch(() => {
+          return res.status(401);
         });
     }
   },
