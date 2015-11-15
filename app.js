@@ -15,7 +15,7 @@ const express = require('express'),
 // Use helmet to secure Express headers
 app.use(helmet());
 app.use(cors({
-  origin: config.cors.host,
+  origin: [config.cors.host, 'http://swagger.io'],
   allowedHeaders: ['Origin', 'X-Requested-With', 'Content-Type', 'Accept', 'x-access-token']
 }));
 
