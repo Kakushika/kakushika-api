@@ -16,8 +16,8 @@ cors:
 
 slack:
   api_url: 'https://slack.com/api'
-  client_id: '9266174033.10815675943'
-  client_secret: '7c17975401747c79cd43160b76255d92'
+  client_id: '9266174033.9265709104'
+  client_secret: 'd3edecd5c1ab4dbc6f30c26895f1f553'
   callback_path:
     web: 'https://api/kksk.io/#/callback/slack/success'
     mobile: 'app://kksk.io/slack/success'
