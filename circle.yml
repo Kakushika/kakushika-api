@@ -13,4 +13,5 @@ deployment:
     commands:
       - git clone ${DEPLOY_TARGET_REPOSITORY} deployment
       - gulp
+      - chmod +x ./deploy.sh
       - ./deploy.sh
