@@ -26,6 +26,11 @@ app.use(bodyParser.urlencoded({
 }));
 app.use(compression());
 
+app.all('/', (req, res) => {
+  res.json({
+    message: 'hello, from kksk api.'
+  });
+});
 app.use(require('./routers/public'));
 app.use(require('./middleware/authorization'));
 app.use(require('./routers/private'));
