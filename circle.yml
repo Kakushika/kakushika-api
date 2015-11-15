@@ -4,7 +4,6 @@ machine:
 
 dependencies:
   override:
-    - git clone ${DEPLOY_TARGET_REPOSITORY} deployment
     - npm install -g gulp mocha
     - npm install
 
@@ -12,6 +11,6 @@ deployment:
   production:
     branch: master
     commands:
+      - git clone ${DEPLOY_TARGET_REPOSITORY} deployment
       - gulp
-      - chmod +x ./deploy.sh
       - ./deploy.sh
