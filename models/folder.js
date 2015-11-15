@@ -1,6 +1,7 @@
 'use strict';
 
 const edge = require('edge');
+const user = require('./user');
 
 const create = edge.func('sql-o', () => {
   /*
@@ -149,6 +150,16 @@ const folder = {
           resolve(folder);
         }, reject);
       });
+    });
+  },
+  createHome: (userId) => {
+    return new Promise((resolve, reject) => {
+      create({
+        userId: userId,
+        name: 'home'
+      }, createSingleCallback(resolve, reject));
+    }).then((folder) => {
+      return user.addHome(userId, folder.id);
     });
   },
   createRelations: (userId, to, folderIds) => {

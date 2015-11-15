@@ -29,6 +29,8 @@ const auth = {
     } else {
       models.user.create(email, name, password)
         .then((user) => {
+          models.folder.createHome(user.id);
+
           let token = jwt.sign({
             id: user.id
           }, config.jwt.secret, {

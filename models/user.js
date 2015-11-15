@@ -56,6 +56,12 @@ const register = edge.func('sql-o', () => {
   */
 });
 
+const addHome = edge.func('sql-o', () => {
+  /*
+    UPDATE Users SET [home] = @folderId, WHERE [id] = @userId
+   */
+});
+
 function createCallback(resolve, reject) {
   return function callback(err, result) {
     if (err) {
@@ -164,6 +170,14 @@ const user = {
           hash: hash
         }, createSingleCallback(resolve, reject));
       });
+    });
+  },
+  addHome: (userId, folderId) => {
+    return new Promise((resolve, reject) => {
+      addHome({
+        id: userId,
+        folderId: folderId
+      }, createCallback(resolve, reject));
     });
   }
 };
