@@ -19,11 +19,11 @@ slack:
   client_id: '9266174033.9265709104'
   client_secret: 'd3edecd5c1ab4dbc6f30c26895f1f553'
   callback_path:
-    web: 'https://api.kksk.io/#/callback/slack/success'
-    mobile: 'https://api.kksk.io/#/callback/slack/success'
+    web: 'http://api.kksk.io/#/callback/slack/success'
+    mobile: 'http://api.kksk.io/#/callback/slack/success'
   redirect_path:
-    web: 'https://api.kksk.io/#/callback/slack/error'
-    mobile: 'https://api.kksk.io/#/callback/slack/error'
+    web: 'http://api.kksk.io/#/callback/slack/error'
+    mobile: 'http://api.kksk.io/#/callback/slack/error'
 
 applicationinsights:
   instrumentation_key: '45bb61c1-0777-4d55-939f-fd364fb25cbd'
