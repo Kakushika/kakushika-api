@@ -13,11 +13,11 @@ connect.slack = {
 
     Slack.oauth.getUrl({
       client_id: config.slack.client_id,
-      redirect_uri: config.slack.callback_path[type]
+      redirect_uri: config.slack.callback_path[type] | config.slack.callback_path.web
     }, (err, url) => {
       if (err) {
         res.status(500).json({
-          redirect_url: config.slack.redirect_uri[type]
+          redirect_url: config.slack.redirect_uri[type] | config.slack.callback_path.web
         });
       } else {
         res.json({
