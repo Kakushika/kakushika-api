@@ -12,7 +12,7 @@ login:
     cost: 10
 
 cors:
-  host: 'https://kksk.io'
+  host: 'http://editor.swagger.io'
 
 slack:
   api_url: 'https://slack.com/api'
