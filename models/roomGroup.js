@@ -41,17 +41,17 @@ const group = {
   create: (userId, externalId, externalType, name) => {
     return new Promise((resolve, reject) => {
       create({
-        userId: userId,
-        externalId: externalId,
-        externalType: externalType,
-        name: name
+        userId,
+        externalId,
+        externalType,
+        name
       }, createSingleCallback(resolve, reject));
     });
   },
   getIn: (ids) => {
     return new Promise((resolve, reject) => {
       getInIds({
-        ids: ids
+        ids
       }, createCallback(resolve, reject));
     });
   }

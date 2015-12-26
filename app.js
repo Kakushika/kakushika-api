@@ -1,16 +1,12 @@
 'use strict';
 
-/* jshint unused: false */
-
 const express = require('express'),
   app = express(),
-  fs = require('fs'),
   logger = require('morgan'),
   bodyParser = require('body-parser'),
   compression = require('compression'),
   helmet = require('helmet'),
-  cors = require('cors'),
-  config = require('config');
+  cors = require('cors');
 
 // Use helmet to secure Express headers
 app.use(helmet());
@@ -37,7 +33,7 @@ app.use(require('./routers/private'));
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
-  let err = new Error('Not Found');
+  const err = new Error('Not Found');
   err.status = 404;
   next(err);
 });
@@ -47,7 +43,7 @@ app.use((req, res, next) => {
 // development error handler
 // will print stacktrace
 if (app.get('env') === 'development') {
-  app.use((err, req, res, next) => {
+  app.use((err, req, res) => {
     res.status(err.status || 500);
     res.json({
       error: err
@@ -57,7 +53,7 @@ if (app.get('env') === 'development') {
 
 // production error handler
 // no stacktraces leaked to user
-app.use((err, req, res, next) => {
+app.use((err, req, res) => {
   res.status(err.status || 500);
   res.json({
     error: err.message

@@ -3,10 +3,8 @@
 const models = require('../models');
 
 const search = {
-  messages: (req, res, next) => {
-  },
-  assets: (req, res, next) => {
-  },
+  messages: () => {},
+  assets: () => {}
 };
 
 module.exports = search;

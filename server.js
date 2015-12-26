@@ -2,11 +2,6 @@
 
 'use strict';
 
-/* jshint latedef:nofunc */
-
-/**
- * Module dependencies.
- */
 const app = require('./app'),
   http = require('http'),
   utils = require('./utils');
@@ -41,7 +36,7 @@ server.on('listening', onListening);
  * Normalize a port into a number, string, or false.
  */
 function normalizePort(val) {
-  let port = parseInt(val, 10);
+  const port = parseInt(val, 10);
   if (isNaN(port)) {
     // named pipe
     return val;
@@ -60,15 +55,15 @@ function onError(error) {
   if (error.syscall !== 'listen') {
     throw error;
   }
-  let bind = typeof port === 'string' ? 'Pipe ' + port : 'Port ' + port;
+  const bind = typeof port === 'string' ? `Pipe ${port}` : `Port ${port}`;
   // handle specific listen errors with friendly messages
   switch (error.code) {
     case 'EACCES':
-      console.error(bind + ' requires elevated privileges');
+      utils.logger.err(`${bind} requires elevated privileges`);
       process.exit(1);
       break;
     case 'EADDRINUSE':
-      console.error(bind + ' is already in use');
+      utils.logger.err(`${bind} is already in use`);
       process.exit(1);
       break;
     default:
@@ -80,7 +75,7 @@ function onError(error) {
  * Event listener for HTTP server 'listening' event.
  */
 function onListening() {
-  let addr = server.address(),
-    bind = typeof addr === 'string' ? 'pipe ' + addr : 'port ' + addr.port;
-  utils.logger.info('start api server...' + bind);
+  const addr = server.address();
+  const bind = typeof addr === 'string' ? `pipe ${addr}` : `port ${addr.port}`;
+  utils.logger.info(`start api server... ${bind}`);
 }
