@@ -4,7 +4,7 @@ const models = require('../models');
 
 const rooms = {
   readMessages: (req, res, next) => {
-    let roomId = req.params.room_id;
+    const roomId = req.params.room_id;
 
     models.message.read(roomId, req.query.offset, req.query.limit)
       .then((messages) => {
@@ -14,8 +14,8 @@ const rooms = {
       });
   },
   createReader: (req, res, next) => {
-    let userId = req.body.userId,
-      roomId = req.params.roomId;
+    const userId = req.body.userId;
+    const roomId = req.params.roomId;
 
     models.roomReadable.create(userId, roomId)
       .then(() => {
@@ -24,7 +24,7 @@ const rooms = {
         return next(err);
       });
   },
-  deleteReader: (req, res, next) => {}
+  deleteReader: () => {}
 };
 
 module.exports = rooms;

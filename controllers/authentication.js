@@ -7,9 +7,9 @@ const jwt = require('jsonwebtoken'),
 
 const auth = {
   signup: (req, res, next) => {
-    let email = req.body.email,
-      password = req.body.password,
-      name = req.body.name;
+    const email = req.body.email;
+    const password = req.body.password;
+    const name = req.body.name;
 
     if (!email || !validator.isEmail(email)) {
       res.status(400).json({
@@ -31,23 +31,22 @@ const auth = {
         .then((user) => {
           models.folder.createHome(user.id);
 
-          let token = jwt.sign({
+          const token = jwt.sign({
             id: user.id
           }, config.jwt.secret, {
             expiresInMinutes: 1440 // 24 hours
           });
           res.status(201).json({
-            ok: true,
-            token: token
+            token
           });
         }).catch((err) => {
           next(err);
         });
     }
   },
-  login: (req, res, next) => {
-    let email = req.body.email,
-      password = req.body.password;
+  login: (req, res) => {
+    const email = req.body.email;
+    const password = req.body.password;
 
     if (!email || !validator.isEmail(email)) {
       res.status(400).json({
@@ -65,22 +64,21 @@ const auth = {
           if (!user || !user.id) {
             return res.status(401);
           }
-          let token = jwt.sign({
+          const token = jwt.sign({
             id: user.id
           }, config.jwt.secret, {
             expiresInMinutes: 1440 // 24 hours
           });
           res.json({
-            token: token,
+            token,
             expires: new Date(Date.now() + 1440 * 60 * 1000).toISOString(),
-            refleshToken: ''
+              refleshToken: ''
           });
         }).catch(() => {
           return res.status(401);
         });
     }
-  },
-  reflesh: (req, res, next) => {}
+  }
 };
 
 module.exports = auth;

@@ -4,7 +4,7 @@ const models = require('../models');
 
 const user = {
   me: (req, res, next) => {
-    let userId = req.decoded.id;
+    const userId = req.decoded.id;
 
     models.user.single(userId)
       .then((user) => {
@@ -22,8 +22,8 @@ const user = {
       });
   },
   read: (req, res, next) => {
-    let startWith = req.query.start_with,
-      limit = req.query.limit;
+    const startWith = req.query.start_with;
+    const limit = req.query.limit;
 
     models.user.readsByName(startWith, limit)
       .then((users) => {

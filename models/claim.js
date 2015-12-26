@@ -22,13 +22,6 @@ const single = edge.func('sql-o', () => {
       WHERE [userId] = @userId AND [key] = @key
   */
 });
-const update = edge.func('sql-o', () => {
-  /*
-      UPDATE Claims
-      SET [value] = @value
-      WHERE [userId] = @userId AND [key] = @key
-  */
-});
 
 function createSingleCallback(reject, resolve) {
   return function callback(err, result) {
@@ -44,36 +37,36 @@ const claim = {
   create: (userId, key, value) => {
     return new Promise((resolve, reject) => {
       create({
-        userId: userId,
-        key: key,
-        value: value
+        userId,
+        key,
+        value
       }, createSingleCallback(reject, resolve));
     });
   },
   createRegisterToken: (userId) => {
     return new Promise((resolve, reject) => {
       createRegisterToken({
-        userId: userId
+        userId
       }, createSingleCallback(resolve, reject));
     });
   },
   single: (userId, key) => {
     return new Promise((resolve, reject) => {
       single({
-        userId: userId,
-        key: key
+        userId,
+        key
       }, createSingleCallback(reject, resolve));
     });
   },
   update: (userId, key, value) => {
     return new Promise((resolve, reject) => {
       create({
-        userId: userId,
-        key: key,
-        value: value
+        userId,
+        key,
+        value
       }, createSingleCallback(reject, resolve));
     });
-  },
+  }
 };
 
 module.exports = claim;

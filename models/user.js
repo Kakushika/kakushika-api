@@ -96,9 +96,9 @@ const user = {
           return reject(err);
         }
         create({
-          email: email,
-          name: name,
-          hash: hash
+          email,
+          name,
+          hash
         }, createSingleCallback(resolve, reject));
       });
     }).then((user) => {
@@ -106,7 +106,7 @@ const user = {
         claim.createRegisterToken(user)
           .then((claim) => {
             resolve({
-              user: user,
+              user,
               registerToken: claim.value
             });
           }, reject);
@@ -141,21 +141,21 @@ const user = {
   single: (id) => {
     return new Promise((resolve, reject) => {
       single({
-        id: id
+        id
       }, createSingleCallback(resolve, reject));
     });
   },
   singleByEmail: (email) => {
     return new Promise((resolve, reject) => {
       singleByEmail({
-        email: email
+        email
       }, createSingleCallback(resolve, reject));
     });
   },
   register: (id) => {
     return new Promise((resolve, reject) => {
       register({
-        id: id
+        id
       }, createCallback(resolve, reject));
     });
   },
@@ -166,8 +166,8 @@ const user = {
           return reject(err);
         }
         isRegistered({
-          email: email,
-          hash: hash
+          email,
+          hash
         }, createSingleCallback(resolve, reject));
       });
     });
@@ -176,7 +176,7 @@ const user = {
     return new Promise((resolve, reject) => {
       addHome({
         id: userId,
-        folderId: folderId
+        folderId
       }, createCallback(resolve, reject));
     });
   }

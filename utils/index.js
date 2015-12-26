@@ -1,7 +1,7 @@
 'use strict';
 
 if (!global.hasOwnProperty('utils')) {
-  var config = require('config'),
+  const config = require('config'),
     appInsights = require('applicationinsights'),
     logentries = require('node-logentries');
 

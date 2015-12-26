@@ -9,7 +9,7 @@ const connect = {};
 
 connect.slack = {
   oauth: (req, res) => {
-    let type = req.query.type;
+    const type = req.query.type;
 
     Slack.oauth.getUrl({
       client_id: config.slack.client_id,
@@ -27,8 +27,8 @@ connect.slack = {
     });
   },
   callback: (req, res) => {
-    let userId = req.decoded.id,
-      code = req.body.code;
+    const userId = req.decoded.id;
+    const code = req.body.code;
 
     if (!code) {
       res.status(400).json({
@@ -38,7 +38,7 @@ connect.slack = {
       Slack.oauth.access({
         client_id: config.slack.client_id,
         client_secret: config.slack.client_secret,
-        code: code
+        code
       }, (error, data) => {
         if (error || !data.ok) {
           res.status(400).json({
@@ -46,20 +46,19 @@ connect.slack = {
           });
         } else {
           request
-            .get(config.slack.api_url + '/team.info?token=' + data.access_token)
+            .get(`${config.slack.api_url}/team.info?token=${data.access_token}`)
             .end((err, result) => {
               if (err) {
                 return res.status(500).json({
                   ok: false
                 });
               }
-              models.claim.create(userId, 'slack:' + result.body.team.id + ':token', data.access_token);
+              models.claim.create(userId, `slack:${result.body.team.id}:token`, data.access_token);
               models.roomGroup.create(userId, result.body.team.id, 'slack', result.body.team.name).then((roomGroup) => {
                 Slack.channel.list({
                   token: data.access_token
                 }, (err, data) => {
                   if (err) {
-                    console.error(err);
                     return;
                   }
                   data.channels.forEach((channel) => {
@@ -70,7 +69,6 @@ connect.slack = {
                   token: data.access_token
                 }, (err, data) => {
                   if (err) {
-                    console.error(err);
                     return;
                   }
                   data.groups.forEach((group) => {
@@ -87,7 +85,5 @@ connect.slack = {
     }
   }
 };
-
-connect.hipchat = (req, res, next) => {};
 
 module.exports = connect;

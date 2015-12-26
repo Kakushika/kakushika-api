@@ -69,16 +69,6 @@ const deleteRelation = edge.func('sql-o', () => {
    */
 });
 
-// function createCallback(resolve, reject) {
-//   return function callback(err, result) {
-//     if (err) {
-//       reject(err);
-//     } else {
-//       resolve(result);
-//     }
-//   };
-// }
-
 function createSingleCallback(resolve, reject) {
   return function callback(err, result) {
     if (err) {
@@ -90,22 +80,22 @@ function createSingleCallback(resolve, reject) {
 }
 
 function resolveName(userId, parentId, folderName) {
-  let m = folderName.match(/(.+)\((\d+)\)/),
-    name = folderName,
-    id;
+  const m = folderName.match(/(.+)\((\d+)\)/);
+  let name = folderName;
+  let id;
   if (m) {
     name = m[1];
     id = m[2];
   }
   return new Promise((resolve, reject) => {
     getReadablesInFolder({
-      userId: userId,
-      parentId: parentId,
-      name: name
+      userId,
+      parentId,
+      name
     }, (err, result) => {
       if (!err) {
         if (id) {
-          let index = result.indexOf(id);
+          const index = result.indexOf(id);
           if (index !== -1) {
             resolve(result[index]);
           } else {
@@ -124,8 +114,8 @@ function resolveName(userId, parentId, folderName) {
 }
 
 function resolvePath(userId, path) {
-  let name = path.shift(),
-    promise = resolveName(userId, null, name);
+  let name = path.shift();
+  const promise = resolveName(userId, null, name);
   while (!!(name = path.shift())) {
     promise.then((id) => {
       return resolveName(userId, id, name);
@@ -138,13 +128,13 @@ const folder = {
   create: (parentFolderId, userId, name) => {
     return new Promise((resolve, reject) => {
       create({
-        userId: userId,
-        name: name
+        userId,
+        name
       }, createSingleCallback(resolve, reject));
     }).then((folder) => {
       return new Promise((resolve, reject) => {
         createRelation({
-          parentFolderId: parentFolderId,
+          parentFolderId,
           childFolderId: folder.id
         }).then(() => {
           resolve(folder);
@@ -155,7 +145,7 @@ const folder = {
   createHome: (userId) => {
     return new Promise((resolve, reject) => {
       create({
-        userId: userId,
+        userId,
         name: 'home'
       }, createSingleCallback(resolve, reject));
     }).then((folder) => {
@@ -207,7 +197,7 @@ const folder = {
     return new Promise((resolve, reject) => {
       createReadable({
         userId: targetUserId,
-        folderId: folderId
+        folderId
       }, createSingleCallback(resolve, reject));
     });
   },
@@ -215,21 +205,21 @@ const folder = {
     return resolvePath(userId, ['Home'].concat(path))
       .then((id) => {
         return getInFolder({
-          id: id
+          id
         }, createSingleCallback);
       });
   },
   getInFolder: (userId, folderId) => {
     return new Promise((resolve, reject) => {
       getInFolder({
-        folderId: folderId
+        folderId
       }, createSingleCallback(resolve, reject));
     });
   },
   getReadablesUserInFolder: (userId, folderId) => {
     return new Promise((resolve, reject) => {
       getReadablesUserInFolder({
-        folderId: folderId
+        folderId
       }, createSingleCallback(resolve, reject));
     });
   },

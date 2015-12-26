@@ -4,21 +4,21 @@ const models = require('../models');
 
 const folders = {
   create: (req, res, next) => {
-    let userId = req.decoded.id;
+    const userId = req.decoded.id;
 
     models.folder.create(req.query.parent, userId, req.query.name)
       .then((folder) => {
         return res.json({
-          folder: folder
+          folder
         });
       }).catch((err) => {
         return next(err);
       });
   },
-  rename: (req, res) => {
-    let userId = req.decoded.id,
-      folderId = req.params.folder_id,
-      folderName = req.query.name;
+  rename: (req, res, next) => {
+    const userId = req.decoded.id;
+    const folderId = req.params.folder_id;
+    const folderName = req.query.name;
 
     models.folder.rename(userId, folderId, folderName)
       .then(() => {
@@ -28,11 +28,11 @@ const folders = {
       });
   },
   createChildren: (req, res) => {
-    let userId = req.decoded.id,
-      folders = req.body.folders,
-      rooms = req.body.rooms,
-      from = req.body.from,
-      to = req.params.folder_id;
+    const userId = req.decoded.id;
+    const folders = req.body.folders;
+    const rooms = req.body.rooms;
+    const from = req.body.from;
+    const to = req.params.folder_id;
 
     if (Number.isFinite(from)) {
       if (Array.isArray(folders)) {
@@ -52,10 +52,10 @@ const folders = {
       return res.status(201);
     }
   },
-  deleteChildren: (req, res, next) => {},
+  deleteChildren: () => {},
   read: (req, res, next) => {
-    let userId = req.decoded.id,
-      folderId = req.params.folder_id;
+    const userId = req.decoded.id;
+    const folderId = req.params.folder_id;
 
     Promise.all([models.folder.getInFolder(userId, folderId), models.room.getInFolder(userId, folderId), models.folder.getReadablesUserInFolder(userId, folderId)])
       .then((result) => {
@@ -72,14 +72,14 @@ const folders = {
       });
   },
   createReader: (req, res) => {
-    let userId = req.decoded.id,
-      folderId = req.params.folder_id,
-      targetUserId = req.body.userId;
+    const userId = req.decoded.id;
+    const folderId = req.params.folder_id;
+    const targetUserId = req.body.userId;
 
     models.folder.createReadable(userId, folderId, targetUserId);
     return res.status(201);
   },
-  deteleteReader: (req, res, next) => {},
+  deteleteReader: () => {}
 };
 
 module.exports = folders;

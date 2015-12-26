@@ -3,17 +3,17 @@
 const edge = require('edge');
 
 const read = edge.func('sql-o', () => {
-/*
-  SELECT m.*, e.id, e.userId, e.name FROM Messages AS m
-  INNER JOIN externalUsers AS e ON m.externalUserId = e.id
-  WHERE m.roomId = @roomId
-  ORDER BY m.pubDate DESC
-  OFFSET @offset ROWS
-  FETCH NEXT @limit ROWS ONLY
-*/
+  /*
+    SELECT m.*, e.id, e.userId, e.name FROM Messages AS m
+    INNER JOIN externalUsers AS e ON m.externalUserId = e.id
+    WHERE m.roomId = @roomId
+    ORDER BY m.pubDate DESC
+    OFFSET @offset ROWS
+    FETCH NEXT @limit ROWS ONLY
+  */
 });
 
-const getInRoom = edge.func('sql-o', function() {
+const getInRoom = edge.func('sql-o', () => {
   /*
       SELECT m.*, a.[id] AS assetId, a.[type], a.[title], a.[link] FROM Messages AS m
       INNER JOIN Assets AS a ON m.[id] = a.[id]
@@ -24,7 +24,7 @@ const getInRoom = edge.func('sql-o', function() {
   */
 });
 
-var getInRooms = edge.func('sql-o', () => {
+const getInRooms = edge.func('sql-o', () => {
   /*
       SELECT m.*, a.[id] AS assetId, a.[type], a.[title], a.[link] FROM Messages AS m
       INNER JOIN Assets AS a ON m.[id] = a.[id]
@@ -49,14 +49,14 @@ const message = {
   read: (roomId, offset, limit) => {
     return new Promise((resolve, reject) => {
       read({
-        roomId: roomId,
+        roomId,
         offset: offset || 0,
-        limit: limit || 50
+          limit: limit || 50
       }, (err, result) => {
-        if(err) {
+        if (err) {
           return reject(err);
         }
-        let messages = [];
+        const messages = [];
         result.forEach((message) => {
           messages.push({
             id: message.m.id,
@@ -77,18 +77,18 @@ const message = {
   getInRooms: (roomIds, offset, limit) => {
     return new Promise((resolve, reject) => {
       getInRooms({
-        roomIds: roomIds,
+        roomIds,
         offset: offset || 0,
-        limit: limit || 100
+          limit: limit || 100
       }, createCallback(resolve, reject));
     });
   },
   getInRoom: (roomId, offset, limit) => {
     return new Promise((resolve, reject) => {
       getInRoom({
-        roomId: roomId,
+        roomId,
         offset: offset || 0,
-        limit: limit || 100
+          limit: limit || 100
       }, createCallback(resolve, reject));
     });
   }
