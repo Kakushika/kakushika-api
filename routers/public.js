@@ -12,6 +12,6 @@ const authentication = require('../controllers').authentication,
 
 router.post('/signup', authentication.signup);
 router.post('/login', authentication.login);
-router.post('/reflesh', authentication.reflesh);
+//router.post('/reflesh', authentication.reflesh);
 
 module.exports = router;

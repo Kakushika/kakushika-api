@@ -29,7 +29,7 @@ app.all('/', (req, res) => {
 });
 app.use(require('./routers/public'));
 app.use(require('./middleware/authorization'));
-app.use(require('./routers/private'));
+//app.use(require('./routers/private'));
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
