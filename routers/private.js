@@ -13,7 +13,7 @@ router.get('/users', users.read);
 
 router.get('/connect/slack', connect.slack.oauth);
 router.post('/connect/slack', connect.slack.callback);
-router.post('/connect/hipchat', connect.hipchat);
+//router.post('/connect/hipchat', connect.hipchat);
 
 router.post('/folders', folders.create);
 router.get('/folders/:folder_id', folders.read);
