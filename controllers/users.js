@@ -9,8 +9,7 @@ const user = {
     models.user.single(userId)
       .then((user) => {
         if (!user) {
-          return res.status(401).json({
-            ok: false
+          return res.status(404).json({
           });
         }
         return res.json({

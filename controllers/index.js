@@ -1,7 +1,7 @@
 'use strict';
 
-const fs = require('fs'),
-  controllers = {};
+const fs = require('fs');
+const controllers = {};
 
 fs.readdirSync(`${__dirname}/`).forEach((file) => {
   if (file.includes('.js') && !file.includes('index')) {
