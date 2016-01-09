@@ -30,7 +30,7 @@ const createReadable = edge.func('sql-o', () => {
 const getInFolder = edge.func('sql-o', () => {
   /*
       SELECT f.* FROM Folders AS f
-      INNER JOIN R_FoldersEdge AS fse ON fse.[childFolderId] = f.[id]
+      INNER JOIN R_FoldersEdges AS fse ON fse.[childFolderId] = f.[id]
       WHERE fse.[parentFolderId] = @folderId
   */
 });
@@ -46,7 +46,7 @@ const getReadablesUserInFolder = edge.func('sql-o', () => {
 const getReadablesInFolder = edge.func('sql-o', () => {
   /*
       SELECT f.[id] FROM Folders AS f
-      INNER JOIN R_FoldersEdge AS fse ON fse.[childFolderId] = f.[id]
+      INNER JOIN R_FoldersEdges AS fse ON fse.[childFolderId] = f.[id]
       INNER JOIN R_FolderReadableUsers AS fru.[folderId] = f.[id]
       WHERE fru.[userId] = @userId
       WHERE fse.[parentFolderId] = @parentId
