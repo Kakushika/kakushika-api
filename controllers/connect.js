@@ -1,9 +1,9 @@
 'use strict';
 
-const config = require('config'),
-  request = require('superagent'),
-  Slack = require('slack-api'),
-  models = require('../models');
+const config = require('config');
+const request = require('superagent');
+const Slack = require('slack-api');
+const models = require('../models');
 
 const connect = {};
 
@@ -32,7 +32,6 @@ connect.slack = {
 
     if (!code) {
       res.status(400).json({
-        ok: false
       });
     } else {
       Slack.oauth.access({
@@ -42,7 +41,6 @@ connect.slack = {
       }, (error, data) => {
         if (error || !data.ok) {
           res.status(400).json({
-            ok: false
           });
         } else {
           request
@@ -50,7 +48,6 @@ connect.slack = {
             .end((err, result) => {
               if (err) {
                 return res.status(500).json({
-                  ok: false
                 });
               }
               models.claim.create(userId, `slack:${result.body.team.id}:token`, data.access_token);
@@ -76,8 +73,7 @@ connect.slack = {
                   });
                 });
               });
-              res.json({
-                ok: true
+              res.status(200).json({
               });
             });
         }

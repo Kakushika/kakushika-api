@@ -1,9 +1,9 @@
 'use strict';
 
-const jwt = require('jsonwebtoken'),
-  config = require('config'),
-  validator = require('validator'),
-  models = require('../models');
+const jwt = require('jsonwebtoken');
+const config = require('config');
+const validator = require('validator');
+const models = require('../models');
 
 const auth = {
   signup: (req, res, next) => {
@@ -13,17 +13,14 @@ const auth = {
 
     if (!email || !validator.isEmail(email)) {
       res.status(400).json({
-        ok: false,
         message: 'invalid_email'
       });
     } else if (!password) {
       res.status(400).json({
-        ok: false,
         message: 'invalid_password'
       });
     } else if (!name) {
       res.status(400).json({
-        ok: false,
         message: 'invalid_name'
       });
     } else {
@@ -50,19 +47,17 @@ const auth = {
 
     if (!email || !validator.isEmail(email)) {
       res.status(400).json({
-        ok: false,
         message: 'invalid_email'
       });
     } else if (!password) {
       res.status(400).json({
-        ok: false,
         message: 'invalid_password'
       });
     } else {
       models.user.verify(email, password)
         .then((user) => {
           if (!user || !user.id) {
-            return res.status(401);
+            return res.status(404);
           }
           const token = jwt.sign({
             id: user.id
@@ -75,7 +70,7 @@ const auth = {
               refleshToken: ''
           });
         }).catch(() => {
-          return res.status(401);
+          return res.status(400);
         });
     }
   }
