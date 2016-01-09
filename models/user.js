@@ -1,9 +1,9 @@
 'use strict';
 
-const bcrypt = require('bcryptjs'),
-  config = require('config'),
-  edge = require('edge'),
-  claim = require('./claim.js');
+const bcrypt = require('bcryptjs');
+const config = require('config');
+const edge = require('edge');
+const claim = require('./claim.js');
 
 const create = edge.func('sql-o', () => {
   /*

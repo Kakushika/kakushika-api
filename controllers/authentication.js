@@ -6,7 +6,7 @@ const validator = require('validator');
 const models = require('../models');
 
 const auth = {
-  signup: (req, res, next) => {
+  signup: (req, res) => {
     const email = req.body.email;
     const password = req.body.password;
     const name = req.body.name;
@@ -36,8 +36,10 @@ const auth = {
           res.status(201).json({
             token
           });
-        }).catch((err) => {
-          next(err);
+        }).catch(() => {
+          res.status(409).json({
+            message: 'already_registered'
+          });
         });
     }
   },
